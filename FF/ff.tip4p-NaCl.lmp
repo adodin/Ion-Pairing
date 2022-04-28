@@ -1,0 +1,40 @@
+# ==========================================================================
+# ==========================================================================
+# Force Field for Minimizing Na2CO3 in TIP4P water
+# Written By: Amro Dodin (Geissler Group - UC Berkeley & LBL)
+# ==========================================================================
+# ==========================================================================
+
+# Atomic Masses
+mass	1 16.00   # ODw
+mass	2 1.000	  # H
+mass	3 0.001	  # M
+mass	4 12.00	  # Cl
+mass 	5 35.00	  # Na
+
+# Pair Style
+pair_style lj/cut/coul/long 10.0
+pair_modify shift yes
+
+# Long Range Style
+kspace_style pppm 1.0e-3
+
+# Pair Coefficients
+pair_coeff 1 1  0.155  3.154
+pair_coeff 2 2  0.000  0.000
+pair_coeff 3 3  0.000  0.000
+pair_coeff 4 4  0.118  5.018
+pair_coeff 5 5  0.100  2.876
+
+# Bonded Interactions
+# Stiff Constraints to Fix TIP4P Geometry
+bond_style harmonic
+angle_style harmonic
+improper_style harmonic
+
+# Bond & Angle Constraints
+bond_coeff     1 1000000  0.9572
+bond_coeff     2 1000000  0.125
+angle_coeff    1 1000000  104.52
+angle_coeff    2 1000000  52.26
+improper_coeff 1 1000000  0

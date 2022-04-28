@@ -1,0 +1,11 @@
+# drude.ff, version 2015/05/07
+# units: kJ/mol, A, deg
+# kforce is in the form k/2 r_D^2
+
+# type  m_D/u   q_D/e    k_D   alpha/A3  thole
+# SWM4-NDP water, CPL 418(2006)245
+ODw     0.8    -1.7164  4184.0   0.978   2.6
+# Na2CO3, Du et al J. Coll. Int. Sci. 318 (2008) 271
+Na      0.8    -0.43875 4184.0   0.250   2.6
+C       0.8    -1.0811  4184.0   0.616   2.6
+Oc      0.8    -0.76167 4184.0   0.434   2.6

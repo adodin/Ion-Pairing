@@ -1,0 +1,99 @@
+# ==============================================================================
+# Symmetrized SWM4-NDP + Na2Co3 + Au Force Field File with Thole screening
+# Written By: Amro Dodin (Geissler Group - UC Berkeley & LBL)
+# ==============================================================================
+
+# Atomic Masses
+mass	1 16.00   # ODw
+mass	2 1.000	  # H
+mass	3 0.001	  # M
+mass	4 12.00	  # C
+mass 	5 16.00	  # Oc
+mass 	6 23.00	  # Na
+mass    7 197.0	  # Au
+
+# Pair Style
+pair_style hybrid/overlay lj/cut/coul/long 10.0 thole 2.6 10.0
+
+# Long Range Style
+kspace_style pppm 1.0e-3
+
+# Core-Core Lennard-Jones Coefficients
+pair_coeff * *  lj/cut/coul/long 0.0        0.0
+pair_coeff 1 1  lj/cut/coul/long 0.14647    3.16435    # ODwC-ODwC
+pair_coeff 1 4  lj/cut/coul/long 0.08551    3.14500    # ODwC-CC
+pair_coeff 1 5  lj/cut/coul/long 0.14310    3.35900    # ODwC-OcC
+pair_coeff 1 6  lj/cut/coul/long 0.11675    3.02100    # ODwC-NaC
+pair_coeff 1 7  lj/cut/coul/long 0.15461    3.16435    # ODwC-Au
+pair_coeff 2 7  lj/cut/coul/long 0.06690    2.70000    # H-Au
+pair_coeff 4 4  lj/cut/coul/long 0.04993    3.12560    # CC-CC
+pair_coeff 4 5  lj/cut/coul/long 0.08357    3.40460    # CC-OcC
+pair_coeff 4 6  lj/cut/coul/long 0.06816    3.00100    # CC-NaC
+pair_coeff 4 7  lj/cut/coul/long 0.07589    3.21280    # CC-Au
+pair_coeff 5 5  lj/cut/coul/long 0.13986    3.55320    # OcC-OcC
+pair_coeff 5 6  lj/cut/coul/long 0.11410    3.21500    # OcC-NaC
+pair_coeff 5 7  lj/cut/coul/long 0.12683    3.42700    # OcD-Au
+pair_coeff 6 6  lj/cut/coul/long 0.09300    2.87600    # NaC-NaC
+pair_coeff 6 7  lj/cut/coul/long 0.10335    3.08800    # NaC-Au
+
+# Non-Polarizable-Drude Lennard-Jones Coefficients
+pair_coeff 7 8  lj/cut/coul/long 0.0081375  3.16435    # ODwP-Au
+pair_coeff 7 9  lj/cut/coul/long 0.0054146  3.21280    # CP-Au
+pair_coeff 7 10 lj/cut/coul/long 0.0066750  3.42700    # OcP-Au
+pair_coeff 7 11 lj/cut/coul/long 0.0037485  3.08800    # NaP-Au
+
+# Core-Particle Lennard-Jones Coefficients
+pair_coeff 1 8  lj/cut/coul/long 0.0081375  3.16435    # ODwC-ODwP
+pair_coeff 1 9  lj/cut/coul/long 0.0064468  3.14500    # ODwC-CP
+pair_coeff 1 10 lj/cut/coul/long 0.0079500  3.35900    # ODwC-OcP
+pair_coeff 1 11 lj/cut/coul/long 0.0044660  3.02100    # ODw-NaP
+pair_coeff 4 8  lj/cut/coul/long 0.0048400  3.14500    # CC-ODwP
+pair_coeff 4 9  lj/cut/coul/long 0.0038362  3.12560    # CC-CP
+pair_coeff 4 10 lj/cut/coul/long 0.0047300  3.40460    # CC-OcP
+pair_coeff 4 11 lj/cut/coul/long 0.0026565  3.00100    # CC-NaP
+pair_coeff 5 8  lj/cut/coul/long 0.0079500  3.35900    # OcC-ODwP
+pair_coeff 5 9  lj/cut/coul/long 0.0063004  3.40460    # OcC-CP
+pair_coeff 5 10 lj/cut/coul/long 0.0077700  3.55320    # OcC-OcP
+pair_coeff 5 11 lj/cut/coul/long 0.0043645  3.21500    # OcC-NaP
+pair_coeff 6 8  lj/cut/coul/long 0.0044660  3.02100    # NaC-ODwP
+pair_coeff 6 9  lj/cut/coul/long 0.0026565  3.00100    # NaC-CP
+pair_coeff 6 10 lj/cut/coul/long 0.0026565  3.21500    # NaC-OcP
+pair_coeff 6 11 lj/cut/coul/long 0.0035000  2.87600    # NaC-NaP
+
+# Thole Screening Parameters
+pair_coeff    1    1 thole   0.978
+pair_coeff    1    4 thole   0.776
+pair_coeff    1    5 thole   0.651
+pair_coeff    1    6 thole   0.494
+pair_coeff    1    8 thole   0.978
+pair_coeff    1    9 thole   0.776
+pair_coeff    1   10 thole   0.651
+pair_coeff    1   11 thole   0.494
+pair_coeff    4    4 thole   0.616
+pair_coeff    4    5 thole   0.517
+pair_coeff    4    6 thole   0.392
+pair_coeff    4    8 thole   0.776
+pair_coeff    4    9 thole   0.616
+pair_coeff    4   10 thole   0.517
+pair_coeff    4   11 thole   0.392
+pair_coeff    5    5 thole   0.434
+pair_coeff    5    6 thole   0.329
+pair_coeff    5    8 thole   0.651
+pair_coeff    5    9 thole   0.517
+pair_coeff    5   10 thole   0.434
+pair_coeff    5   11 thole   0.329
+pair_coeff    6    6 thole   0.250
+pair_coeff    6    8 thole   0.494
+pair_coeff    6    9 thole   0.392
+pair_coeff    6   10 thole   0.329
+pair_coeff    6   11 thole   0.250
+pair_coeff    8    8 thole   0.978
+pair_coeff    8    9 thole   0.776
+pair_coeff    8   10 thole   0.651
+pair_coeff    8   11 thole   0.494
+pair_coeff    9    9 thole   0.616
+pair_coeff    9   10 thole   0.517
+pair_coeff    9   11 thole   0.392
+pair_coeff   10   10 thole   0.434
+pair_coeff   10   11 thole   0.329
+pair_coeff   11   11 thole   0.250
