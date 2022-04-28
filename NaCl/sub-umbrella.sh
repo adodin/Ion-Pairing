@@ -3,7 +3,7 @@
 #$ -pe mpi 8
 #$ -j y
 #$ -N NaCl-rUS
-#$ -t 0-11
+#$ -t 1-12
 #$ -V
 #$ -q all.q
 #$ -hold_jid NaCl-min
@@ -15,7 +15,7 @@ if [ ! -d "~/DATA/Ion-Pairing/NaCl/replica$1/" ]; then
   quit
 fi
 
-r=`echo "3.5 + ${SGE_TASK_ID} * 0.5"|bc`
+r=`echo "3.0 + ${SGE_TASK_ID} * 0.5"|bc`
 echo "Bias at r=$r A"
 let "SEED = ${JOB_ID}*${SGE_TASK_ID}"
 echo "SEED: $SEED"

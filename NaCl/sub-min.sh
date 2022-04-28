@@ -14,4 +14,4 @@ mkdir $DATADIR
 mpirun -np 8 lmp -in min.NaCl.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
   -log ${DATADIR}log.NaCl.min
 
-mv ${JOB_NAME}.o${JOB_ID}.${SGE_TASK_ID}
+mv ${JOB_NAME}.o${JOB_ID}
