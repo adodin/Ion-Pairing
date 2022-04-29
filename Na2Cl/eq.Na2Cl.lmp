@@ -56,7 +56,7 @@ group HYDROGENS type 2
 group IONS type 4 5
 group Cl type 4
 group Na type 5
-group PLUMEDOUT id 2045 2046
+group PLUMEDOUT id 2045 2046 2047
 
 # ==========================================================================
 # Initialize Simulation

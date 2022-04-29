@@ -69,12 +69,12 @@ variable initFEvals  equal v_FEvalsPerIter*v_initIters
 variable INPREFIX index ""
 # Simulation Time
 variable dt     equal 1.0        # Timestep (in fs)
-variable nHeat  equal 50      # Time to heat System (in Timesteps)
-variable nEquil equal 50     # Equilibration Duration (in Timesteps)
-variable nProd  equal 100   # Production Duration (in Timesteps)
-#variable nHeat  equal 5000      # Time to heat System (in Timesteps)
-#variable nEquil equal 25000     # Equilibration Duration (in Timesteps)
-#variable nProd  equal 1000000    # Production Duration (in Timesteps)
+#variable nHeat  equal 50      # Time to heat System (in Timesteps)
+#variable nEquil equal 50     # Equilibration Duration (in Timesteps)
+#variable nProd  equal 100   # Production Duration (in Timesteps)
+variable nHeat  equal 5000      # Time to heat System (in Timesteps)
+variable nEquil equal 25000     # Equilibration Duration (in Timesteps)
+variable nProd  equal 1000000    # Production Duration (in Timesteps)
 
 # Collective Statistice Averaging
 variable cvEvery    equal 100
