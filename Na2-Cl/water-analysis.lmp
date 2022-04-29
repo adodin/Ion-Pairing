@@ -1,0 +1,60 @@
+# ==========================================================================
+# ==========================================================================
+# Analyze Water Simulations
+# Written By: Amro Dodin (Geissler Group - UC Berkeley & LBL)
+# Requirements:
+#   1. Atom groups: OXYGENS, HYDROGENS & WATERS
+#   2. Integer Variable: nStep. Number of timesteps in this simulation step.
+#   3. parameters.lmp: Defines cvFreq, atomFreq, DATADIR, label
+# ==========================================================================
+# ==========================================================================
+
+# Dipole Moment Compute
+compute mu all dipole
+
+# Diffusion Coefficients (MSD Approach)
+compute MSD OXYGENS msd
+fix MSD OXYGENS vector 1 c_MSD[4]
+variable DMSD equal slope(f_MSD)
+
+# DIffusion Coefficient (VACF Approach)
+compute VACF OXYGENS vacf
+fix VACF OXYGENS vector 1 c_VACF[4]
+variable DVACF equal dt*trap(f_VACF)
+
+# RDF & Coordination Number
+compute RDF OXYGENS rdf 100
+
+# Water Dipole Moments & COM
+compute wat_chunk WATERS chunk/atom molecule
+compute wat_dipoles WATERS dipole/chunk wat_chunk
+compute wat_COM WATERS com/chunk wat_chunk
+
+# Densities
+compute O_chunk OXYGENS chunk/atom bin/1d z center 0.1
+compute H_chunk HYDROGENS chunk/atom bin/1d z center 0.1
+compute all_chunk WATERS chunk/atom bin/1d z center 0.1
+
+# Diffusion Coefficient Output
+fix D_OUT OXYGENS ave/time ${cvEvery} ${cvRepeat} ${cvFreq} c_MSD[4] v_DMSD c_VACF[4] v_DVACF &
+    file ${DATADIR}diff.${label}.out
+
+# Total Dipole Output
+fix MU_OUT WATERS ave/time ${cvEvery} ${cvRepeat} ${cvFreq} c_mu[*] &
+    file ${DATADIR}mu.${label}.out
+
+# RDF Output
+fix RDF_OUT OXYGENS ave/time ${cvEvery} ${totEvery} ${nStep} c_RDF[*] &
+    file ${DATADIR}rdf.${label}.out mode vector
+
+# Water Molecule Output
+fix wat_OUT WATERS ave/time 1 1 ${atomFreq} c_wat_COM[*] c_wat_dipoles[*] &
+    file ${DATADIR}water.${label}.out mode vector
+
+# Density Output
+fix rho_O OXYGENS ave/chunk ${cvEvery} ${totEvery} ${nStep} O_chunk density/mass &
+    file ${DATADIR}O.rho.${label}.out
+fix rho_H HYDROGENS ave/chunk ${cvEvery} ${totEvery} ${nStep} H_chunk density/mass &
+    file ${DATADIR}H.rho.${label}.out
+fix rho_T WATERS ave/chunk ${cvEvery} ${totEvery} ${nStep} all_chunk density/mass &
+    file ${DATADIR}rho.${label}.out
