@@ -10,9 +10,9 @@
 
 
 # Check If Replica Directory Exists
-if [ ! -d "~/DATA/Ion-Pairing/NaCl/replica$1/" ]; then
-  echo "ERROR: Base DATA directory does not exist"
-  quit
+if [ ! -d "/home/adodin/DATA/Ion-Pairing/NaCl/replica$1/" ]; then
+  echo "ERROR: Base DATA directory does not exist (~/DATA/Ion-Pairing/NaCl/replica$1/)"
+  exit 11
 fi
 
 r=`echo "3.0 + ${SGE_TASK_ID} * 0.5"|bc`
