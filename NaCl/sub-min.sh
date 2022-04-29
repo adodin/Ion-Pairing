@@ -4,7 +4,7 @@
 #$ -j y
 #$ -N NaCl-min
 #$ -V
-#$ -q all.q
+#$ -q regular
 
 let "SEED = ${JOB_ID}"
 echo "SEED: $SEED"

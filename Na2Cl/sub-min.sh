@@ -2,16 +2,16 @@
 #$ -cwd
 #$ -pe mpi 8
 #$ -j y
-#$ -N NaCl-min
+#$ -N Na2Cl-min
 #$ -V
-#$ -q all.q
+#$ -q regular
 
 let "SEED = ${JOB_ID}"
 echo "SEED: $SEED"
-DATADIR=~/DATA/Ion-Pairing/NaCl/replica$1/
+DATADIR=~/DATA/Ion-Pairing/Na2Cl/replica$1/
 mkdir $DATADIR
 
-mpirun -np 8 lmp -in min.NaCl.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+mpirun -np 8 lmp -in min.Na2Cl.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
   -log ${DATADIR}log.NaCl.min
 
 mv ${JOB_NAME}.o${JOB_ID} ${DATADIR}.

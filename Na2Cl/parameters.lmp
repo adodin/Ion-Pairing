@@ -29,7 +29,7 @@ molecule h2o ${FFDIR}tip4p.mol
 # Define Output Labels & Locations
 variable DATAROOT getenv DATAROOT
 variable DATADIR  index  ""   # Default DATADIR. Override via CLI
-variable label    string NaCl
+variable label    string Na2Cl
 
 # Output Frequency (in Timesteps)
 variable thermoFreq equal 500     # Thermodynamic Output Frequency

@@ -5,7 +5,7 @@
 #$ -N NaCl-rUS
 #$ -t 1-12
 #$ -V
-#$ -q all.q
+#$ -q regular
 #$ -hold_jid NaCl-min
 
 
