@@ -3,7 +3,7 @@
 #$ -pe mpi 8
 #$ -j y
 #$ -N Na2Cl-rUS
-#$ -t 1-36
+#$ -t 1-12
 #$ -V
 #$ -q regular
 #$ -hold_jid Na2Cl-min
