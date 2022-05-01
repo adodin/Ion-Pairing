@@ -69,12 +69,12 @@ EOF
 
 if [ ${r1flag} = 1 ]; then
     echo "Using r1 constraint: (r1=$r1; kr1=$kr1)"
-    echo "rRestraint: RESTRAINT ARG=r1 AT=${r1} KAPPA=${kr1}" >> ${fname}
+    echo "r1Restraint: RESTRAINT ARG=r1 AT=${r1} KAPPA=${kr1}" >> ${fname}
 fi
 
 if [ ${r2flag} = 1 ]; then
     echo "Using r2 constraint: (r2=$r2; kr2=$kr2)"
-    echo "rRestraint: RESTRAINT ARG=r2 AT=${r2} KAPPA=${kr2}" >> ${fname}
+    echo "r2Restraint: RESTRAINT ARG=r2 AT=${r2} KAPPA=${kr2}" >> ${fname}
 fi
 
 if [ ${zflag} = 1 ]; then
