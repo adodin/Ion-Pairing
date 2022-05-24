@@ -7,6 +7,9 @@
 # =============================================================================
 # =============================================================================
 
+include parameters.lmp
+include parse_ions.lmp
+
 # =============================================================================
 # Create Simulation Box
 # =============================================================================
@@ -14,24 +17,46 @@
 boundary p p p
 units real
 
-region box block -${Lx} ${Lx} -${Ly} ${Ly} -${Lz} ${Lz}
+atom_style full
+region box block -$L $L -$L $L -$L $L
 create_box ${atomTypes} box bond/types ${bondTypes} angle/types ${angleTypes} &
     dihedral/types ${dihedralTypes} improper/types ${improperTypes} &
     extra/bond/per/atom ${bondsPerAtom} extra/angle/per/atom ${anglesPerAtom} &
     extra/dihedral/per/atom ${dihedralsPerAtom} &
     extra/improper/per/atom ${impropersPerAtom} &
-    extra/special/per/atom ${specialsPerAtom}  
+    extra/special/per/atom ${specialsPerAtom}
 
 # =============================================================================
 # Randomly Place Water & Ions
 # =============================================================================
 
+# Create Water
+create_atoms 0 random ${numWaters} $S box mol water $S
 
+# Create Cations
+if  "${cationMolecular} == True" then &
+    "create_atoms 0 random ${numCations} $S box mol cation $S" &
+else &
+    "create_atoms ${cationType} random ${numCations} $S box" &
+
+# Create Anions
+if  "${anionMolecular} == True" then &
+    "create_atoms 0 random ${numAnions} $S box mol anion $S" &
+else &
+    "create_atoms ${anionType} random ${numAnions} $S box" &
 
 # =============================================================================
 # Relax Overlap
 # =============================================================================
+mass * 1.0
+write_data data.${label}.init
+# Import Minimization Force Field
+include ff.min.${label}.lmp
+
+minimize 1e-6 0.0 1000 2000
 
 # =============================================================================
 # Save Data Output
 # =============================================================================
+
+write_data data.${label}.init

@@ -1,0 +1,110 @@
+# =============================================================================
+# =============================================================================
+#
+# Parses Required Parameters For Cation & Anion Specifications
+# Written By: Amro Dodin
+#
+# ANIONS Implemented: Cl, Cl2, CO3
+# CATIONS Implemented: Na
+#
+# NOTE: Anion number & charge determine cation number via charge balance
+#
+# =============================================================================
+# =============================================================================
+
+# =============================================================================
+# Determine Cation Properties
+# =============================================================================
+
+# Default Values for Simple Cations
+variable cationMolecular string False
+variable qCation equal 1
+variable numCationTypes equal 1
+variable numCationBondTypes equal 0
+variable numCationAngleTypes equal 0
+variable numCationDihedralTypes equal 0
+variable cationBondsPerAtom equal 0
+variable cationAnglesPerAtom equal 0
+variable cationDihedralsPerAtom equal 0
+
+variable tOffset equal 3+v_numCationTypes
+variable bOffset equal 2+v_numCationBondTypes
+variable aOffset equal 1+v_numCationAngleTypes
+variable dOffset equal v_numCationDihedralTypes
+variable iOffset equal 0
+
+# =============================================================================
+# Determine Anion Properties
+# =============================================================================
+
+# Default Values for Simple Anions
+variable anionMolecular string False
+variable qAnion equal 1
+variable numAnionTypes equal 1
+variable numAnionBondTypes equal 0
+variable numAnionAngleTypes equal 0
+variable numAnionDihedralTypes equal 0
+variable anionBondsPerAtom equal 0
+variable anionAnglesPerAtom equal 0
+variable anionDihedralsPerAtom equal 0
+
+if "${anion} == Cl2" then &
+    "variable qAnion equal 2" &
+elif "${anion} == CO3" &
+    "variable anionMolecular string True" &
+    "variable qAnion equal 2" &
+    "variable numAnionTypes equal 2" &
+    "variable numAnionBondTypes equal 1" &
+    "variable numAnionAngleTypes equal 1" &
+    "variable anionBondsPerAtom equal 3" &
+    "variable anionAnglesPerAtom equal 3" &
+    "molecule anion ../FF/co3.mol offset ${tOffset} ${bOffset} ${aOffset} ${dOffset} ${iOffset}"
+
+# =============================================================================
+# Determine Cation Number
+# =============================================================================
+
+# Check if it is possible to charge balance system
+if "$(v_numAnions*v_qAnion%v_qCation) == 0" then &
+    "variable numCations equal floor(v_numAnions*v_qAnion/v_qCation)" &
+else &
+    "print 'ERROR: Cannot Charge Balance System'" &
+    quit
+
+# =============================================================================
+# Determine Total Number of Types Required
+# =============================================================================
+
+variable atomTypes equal 3+v_numCationTypes+v_numAnionTypes
+variable bondTypes equal 2+v_numCationBondTypes+v_numAnionBondTypes
+variable angleTypes equal 2+v_numCationAngleTypes+v_numAnionAngleTypes
+variable dihedralTypes equal v_numCationDihedralTypes+v_numAnionDihedralTypes
+variable improperTypes equal 1
+
+# =============================================================================
+# Determine Number of Quantities Per Atom
+# =============================================================================
+
+variable bondsPerAtom equal 3
+if "${cationBondsPerAtom} > ${bondsPerAtom}" then "variable bondsPerAtom equal v_cationBondsPerAtom"
+if "${anionBondsPerAtom} > ${bondsPerAtom}" then "variable bondsPerAtom equal v_anionBondsPerAtom"
+
+variable anglesPerAtom equal 3
+if "${cationAnglesPerAtom} > ${anglesPerAtom}" then "variable anglesPerAtom equal v_cationAnglesPerAtom"
+if "${anionAnglesPerAtom} > ${anglesPerAtom}" then "variable anglesPerAtom equal v_anionAnglesPerAtom"
+
+variable dihedralsPerAtom equal 0
+if "${cationDihedralsPerAtom} > ${dihedralsPerAtom}" then "variable dihedralsPerAtom equal v_cationDihedralsPerAtom"
+if "${anionDihedralsPerAtom} > ${dihedralsPerAtom}" then "variable dihedralsPerAtom equal v_anionDihedralsPerAtom"
+
+variable impropersPerAtom equal 1
+
+variable specialsPerAtom equal v_bondsPerAtom
+
+
+# =============================================================================
+# Determine Type Numbers for Simple Ions
+# =============================================================================
+
+if "${cationMolecular} == False" then "variable cationType equal 4"
+if "${anionMolecular} == False" then "variable anionType equal 4+v_numCationTypes"
