@@ -36,28 +36,30 @@ create_atoms 0 box subset ${numWaters} $S mol water $S
 
 # Create Cations
 if  "${cationMolecular} == True" then &
-    "create_atoms 0 random ${numCations} $S box mol cation $S" &
+    "create_atoms 0 random ${numCations} $S box mol cation $S overlap ${cationOverlap} maxtry 10000 units lattice" &
 else &
-    "create_atoms ${cationType} random ${numCations} $S box" &
+    "create_atoms ${cationType} random ${numCations} $S box overlap ${cationOverlap} maxtry 10000 units lattice" &
 
 # Create Anions
 if  "${anionMolecular} == True" then &
-    "create_atoms 0 random ${numAnions} $S box mol anion $S" &
+    "create_atoms 0 random ${numAnions} $S box mol anion $S overlap ${anionOverlap} maxtry 10000 units lattice" &
 else &
-    "create_atoms ${anionType} random ${numAnions} $S box" &
+    "create_atoms ${anionType} random ${numAnions} $S box overlap ${anionOverlap} maxtry 10000 units lattice" &
 
 # =============================================================================
 # Relax Overlap
 # =============================================================================
 mass * 1.0
-write_data data.${label}.init
-# Import Minimization Force Field
-include ff.min.${label}.lmp
 
-minimize 1e-6 0.0 1000 2000
+# Import Minimization Force Field
+include ${FFDIR}ff.min.${label}.lmp
+
+thermo_style custom step pe fmax fnorm
+thermo 10
+minimize 0 0 1000 10000
 
 # =============================================================================
 # Save Data Output
 # =============================================================================
 
-write_data data.${label}.init
+write_data ${DATADIR}data.${label}.init
