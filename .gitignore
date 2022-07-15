@@ -6,3 +6,4 @@ data.*
 thermo.*
 *.log
 .DS_Store
+*.csv

@@ -62,4 +62,4 @@ minimize 0 0 1000 10000
 # Save Data Output
 # =============================================================================
 
-write_data ${DATADIR}data.${label}.init nocoeff
+write_data ${DATADIR}data.${label}.init
