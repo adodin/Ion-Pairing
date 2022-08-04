@@ -13,6 +13,28 @@
 # =============================================================================
 
 # =============================================================================
+# Determine Water Model Properties
+# =============================================================================
+
+if "(${water} == tip4p)" then &
+    "variable numWaterTypes equal 3" &
+    "variable numWaterBondTypes equal 2" &
+    "variable numWaterAngleTypes equal 2" &
+    "variable numWaterImproperTypes equal 1" &
+elif "(${water} == swm4-ndp)"  &
+    "variable numWaterTypes equal 3" &
+    "variable numWaterBondTypes equal 2" &
+    "variable numWaterAngleTypes equal 2" &
+    "variable numWaterImproperTypes equal 1" &
+elif "${water}==spce" &
+    "variable numWaterTypes equal 2" &
+    "variable numWaterBondTypes equal 1" &
+    "variable numWaterAngleTypes equal 1" &
+    "variable numWaterImproperTypes equal 0" &
+
+molecule h2o ${FFDIR}${water}.mol
+
+# =============================================================================
 # Determine Cation Properties
 # =============================================================================
 
@@ -28,11 +50,11 @@ variable cationBondsPerAtom equal 0
 variable cationAnglesPerAtom equal 0
 variable cationDihedralsPerAtom equal 0
 
-variable tOffset equal 3+v_numCationTypes
-variable bOffset equal 2+v_numCationBondTypes
-variable aOffset equal 1+v_numCationAngleTypes
+variable tOffset equal v_numWaterTypes+v_numCationTypes
+variable bOffset equal v_numWaterBondTypes+v_numCationBondTypes
+variable aOffset equal v_numWaterAngleTypes+v_numCationAngleTypes
 variable dOffset equal v_numCationDihedralTypes
-variable iOffset equal 1+v_numCationImproperTypes
+variable iOffset equal v_numWaterImproperTypes+v_numCationImproperTypes
 
 # =============================================================================
 # Determine Anion Properties
@@ -78,11 +100,11 @@ else &
 # Determine Total Number of Types Required
 # =============================================================================
 
-variable atomTypes equal 3+v_numCationTypes+v_numAnionTypes
-variable bondTypes equal 2+v_numCationBondTypes+v_numAnionBondTypes
-variable angleTypes equal 2+v_numCationAngleTypes+v_numAnionAngleTypes
+variable atomTypes equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes
+variable bondTypes equal v_numWaterBondTypes+v_numCationBondTypes+v_numAnionBondTypes
+variable angleTypes equal v_numWaterAngleTypes+v_numCationAngleTypes+v_numAnionAngleTypes
 variable dihedralTypes equal v_numCationDihedralTypes+v_numAnionDihedralTypes
-variable improperTypes equal 1+v_numCationImproperTypes+v_numAnionImproperTypes
+variable improperTypes equal v_numWaterImproperTypes+v_numCationImproperTypes+v_numAnionImproperTypes
 
 # =============================================================================
 # Determine Number of Quantities Per Atom

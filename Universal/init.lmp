@@ -8,7 +8,7 @@
 # =============================================================================
 
 include parameters.lmp
-include parse_ions.lmp
+include parse_model.lmp
 
 # =============================================================================
 # Create Simulation Box
@@ -32,7 +32,7 @@ create_box ${atomTypes} box bond/types ${bondTypes} angle/types ${angleTypes} &
 # =============================================================================
 
 # Create Water
-create_atoms 0 box subset ${numWaters} $S mol water $S
+create_atoms 0 box subset ${numWaters} $S mol h2o $S
 
 # Create Cations
 if  "${cationMolecular} == True" then &
