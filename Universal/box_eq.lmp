@@ -1,0 +1,89 @@
+# =============================================================================
+# =============================================================================
+#
+# NPT Equilibration of Liquid Box of Water Solution
+# Written By: Amro Dodin
+#
+# =============================================================================
+# =============================================================================
+
+# =============================================================================
+# Read in Configuration & Parameters
+# =============================================================================
+
+# Initialize Parameters
+include parameters.lmp
+include parse_model.lmp
+
+# Read in Data From init Script
+atom_style full
+pair_style soft 3.0
+bond_style harmonic 
+angle_style harmonic
+improper_style harmonic
+read_data ${DATADIR}data.${label}.init
+
+# Read in Force Field
+include ${FFDIR}ff.${label}.lmp
+delete_bonds all multi 
+neighbor 2.0 bin
+neigh_modify delay 0
+
+# =============================================================================
+# Set Up Groups
+# =============================================================================
+
+group waters type 1:3
+group cations type 4:$((3+v_numCationTypes))
+group anions type $((4+v_numCationTypes)):${atomTypes}
+
+if "${cationMolecular}==True && ${anionMolecular}==True" then &
+    "group molecular union waters cations anions" &
+    "group simple empty" &
+elif "${cationMolecular}==True && ${anionMolecular}==False" &
+    "group molecular union waters cations" &
+    "group simple union anions" &
+elif "${cationMolecular}==False && ${anionMolecular}==True" &
+    "group molecular union waters anions" &
+    "group simple union cations" &
+else &
+    "group molecular union waters" &
+    "group simple union cations anions"
+
+# =============================================================================
+# Set Up Outputs
+# =============================================================================
+
+variable TTarget equal ramp(1,$T)
+variable PTarget equal v_P
+
+thermo_style custom step v_TTarget temp pe v_PTarget press density ke
+thermo ${thermoEvery}
+
+dump 1 all atom ${atomEvery} ${DATADIR}box_eq.${label}.lammpstrj
+
+# =============================================================================
+# Set Up Integration Fixes
+# =============================================================================
+
+timestep ${dt}
+
+fix rigidNPT molecular rigid/npt/small molecule temp 1 $T ${gtT} iso $P $P ${gtP} dilate all tparam 10 10 3 pchain 20
+#fix rigidNPT molecular rigid/nvt/small molecule temp 1 $T ${gtT} tparam 10 10 3
+fix simpleNPT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
+
+run ${nHeatBox}
+
+unfix rigidNPT
+unfix simpleNPT
+variable TTarget equal $T
+
+#fix rigidNPT molecular rigid/npt/small molecule temp $T $T ${gtT} iso $P $P ${gtP} dilate all tparam 10 10 3 pchain 20
+#change_box all z scale 3 units box 
+#write_data data.test 
+fix rigidNPT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3
+fix simpleNPT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
+
+compute cz all chunk/atom bin/1d z center 0.5
+
+run ${nEquilBox}

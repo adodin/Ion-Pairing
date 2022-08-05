@@ -8,7 +8,7 @@
 # =============================================================================
 
 include parameters.lmp
-include parse_ions.lmp
+include parse_model.lmp
 
 # =============================================================================
 # Create Simulation Box
@@ -16,9 +16,10 @@ include parse_ions.lmp
 
 boundary p p p
 units real
+lattice sc $a
 
 atom_style full
-region box block -$L $L -$L $L -$L $L
+region box block 0 $L 0 $L 0 $L units lattice
 create_box ${atomTypes} box bond/types ${bondTypes} angle/types ${angleTypes} &
     dihedral/types ${dihedralTypes} improper/types ${improperTypes} &
     extra/bond/per/atom ${bondsPerAtom} extra/angle/per/atom ${anglesPerAtom} &
@@ -31,32 +32,34 @@ create_box ${atomTypes} box bond/types ${bondTypes} angle/types ${angleTypes} &
 # =============================================================================
 
 # Create Water
-create_atoms 0 random ${numWaters} $S box mol water $S
+create_atoms 0 box subset ${numWaters} $S mol h2o $S
 
 # Create Cations
 if  "${cationMolecular} == True" then &
-    "create_atoms 0 random ${numCations} $S box mol cation $S" &
+    "create_atoms 0 random ${numCations} $S box mol cation $S overlap ${cationOverlap} maxtry 10000 units lattice" &
 else &
-    "create_atoms ${cationType} random ${numCations} $S box" &
+    "create_atoms ${cationType} random ${numCations} $S box overlap ${cationOverlap} maxtry 10000 units lattice" &
 
 # Create Anions
 if  "${anionMolecular} == True" then &
-    "create_atoms 0 random ${numAnions} $S box mol anion $S" &
+    "create_atoms 0 random ${numAnions} $S box mol anion $S overlap ${anionOverlap} maxtry 10000 units lattice" &
 else &
-    "create_atoms ${anionType} random ${numAnions} $S box" &
+    "create_atoms ${anionType} random ${numAnions} $S box overlap ${anionOverlap} maxtry 10000 units lattice" &
 
 # =============================================================================
 # Relax Overlap
 # =============================================================================
 mass * 1.0
-write_data data.${label}.init
-# Import Minimization Force Field
-include ff.min.${label}.lmp
 
-minimize 1e-6 0.0 1000 2000
+# Import Minimization Force Field
+include ${FFDIR}ff.min.${label}.lmp
+
+thermo_style custom step pe fmax fnorm
+thermo 10
+minimize 0 0 1000 10000
 
 # =============================================================================
 # Save Data Output
 # =============================================================================
 
-write_data data.${label}.init
+write_data ${DATADIR}data.${label}.init

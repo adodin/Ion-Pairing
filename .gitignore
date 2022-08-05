@@ -5,3 +5,5 @@ data.*
 *.xyz
 thermo.*
 *.log
+.DS_Store
+*.csv

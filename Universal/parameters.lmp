@@ -1,15 +1,60 @@
 
-variable label string swm4-ndp.${cation}.${anion}
-variable numWaters equal 250
+
+# System Specifications
+units real
+variable SEED index 1                      # Master Seed
+variable numWaters index 250 
 variable numAnions index 1
-variable SEED index 1
+variable cationOverlap index 0.9           # Closest Distance (lattice units) between Water and Ions (requires LAMMPS 06/22/2022 or later)
+variable anionOverlap index 0.9 
+variable water index tip4p
+variable cation index Na
+variable anion index CO3
+
+variable label string ${water}.${cation}.${anion}
+
+variable DATADIR index ./
+variable FFDIR index ../FF/
 
 # Physical Parameters
-variable rho equal 1            # Density (g/cm^3)
-variable MR  equal 18.00        # Molar Mass (g/mol)
+variable rho equal 0.5          # Density (g/cm^3)
+variable MR  equal 18.0        # Molar Mass (g/mol)
 variable NA  equal 6.022e23     # Avogadro's Constant (1/mol)
 
-variable L equal "(10*v_numWaters*v_MR/(v_rho * v_NA))^(1/3)*1e8"
+variable a equal "(v_MR/(v_rho * v_NA))^(1/3)*1e8"
+variable L equal ceil(v_numWaters^(1/3))
 variable S    equal floor(random(0,2^16,v_SEED))
 
-molecule water ../FF/swm4-ndp.mol
+
+# ==========================================================================
+# Output Parameters
+# ==========================================================================
+
+variable thermoEvery index 100
+variable atomEvery index 100
+
+# ==========================================================================
+# Integrator Parameters
+# ==========================================================================
+variable dt index 1.0
+
+# ==========================================================================
+# Thermostat & Barostat Parameters
+# ==========================================================================
+
+# Thermostat
+variable T index 300
+variable gT index 100
+variable gtT equal v_gT*v_dt
+
+# Barrostat
+variable P index 1
+variable gP equal 750
+variable gtP equal v_gP*v_dt
+
+# ==========================================================================
+# Box Equilibration Parameters
+# ==========================================================================
+
+variable nHeatBox index 5000
+variable nEquilBox index 50000
