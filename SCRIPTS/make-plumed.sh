@@ -6,10 +6,10 @@
 # Usage Information
 show_help() {
 cat << EOF
-Usage: ${0##*/}
 Builds PLUMED input file for particle pairing and interface approach.
 
     -h, --help     Displays this help message and exits
+    -d|--data-file 
     -t, --type     Type of particle N. Will use the first 
 EOF
 }
@@ -25,7 +25,7 @@ get_type_ids() {
     current_ids=($(sed -n '/Atoms/,/Velo/p'  $2 | awk -v type=$1 '$3 == type { print $1 }' | sort -n))
 }
 
-# Parse Inputs
+# Initialize Default Values
 particle_ids=()
 r1_ids=()
 r2_ids=()
@@ -38,12 +38,16 @@ plumed_file="plumed.dat"
 out_file="colvar.dat"
 out_freq=1000
 eq_time=1
+
+# Parse Inputs
 while :; do
     case $1 in
+    # Help Message
     -h|-\?|--help)
         show_help
         exit
         ;;
+    # Specify Data File Location
     -d|--data-file)
         if [ "$2" ]; then
             data_fname=$2
@@ -52,6 +56,25 @@ while :; do
             die 'ERROR: "--data-file" requires a non-empty option argument.'
         fi
         ;;
+    # Specify Target Location for PLUMED file output
+    -p|--plumed-file)
+        if [ "$2" ]; then
+            plumed_file=$2
+            shift 2
+        else
+            die 'ERROR: "--plumed-file" requires a non-empty option argument.'
+        fi
+        ;;
+    # Specify output file where PLUMED colvars will be printed
+    -o|--out-file)
+        if [ "$2" ]; then
+            out_file=$2
+            shift 2
+        else
+            die 'ERROR: "--out-file" requires a non-empty option argument.'
+        fi
+        ;;
+    # Add a Particle of Specified Type to Particle List
     -t|--type)
         if [ -z "$data_fname" ]; then
             die 'ERROR: "--type" used before --data-file specified.'
@@ -75,6 +98,7 @@ while :; do
             die 'ERROR: "--type" requires a non-empty option argument.'
         fi
         ;;
+    # Add Particle of Specified ID to particle List
     -i|--id)
         if [ "$2" ]; then
             if [[ ! "${particle_ids[*]}" =~ "$2 " ]]; then
@@ -87,6 +111,7 @@ while :; do
            die 'ERROR: "--id" requires a non-empty option argument.' 
         fi
         ;;
+    # Add a distance constraint between to particles in particle list
     -r|--radius-constraint)
         if [ "$5" ]; then
             if [ $2 == $3 ]; then
@@ -109,6 +134,7 @@ while :; do
             die 'ERROR: "--radius-constraint" requires 4 option arguments (id1 id2 r0 kappa).'
         fi
         ;;
+    # Add a z constraint to particle in particle list
     -z|--z-constraint)
         if [ "$4" ]; then
             if [ "$2" -lt ${#particle_ids[@]} ]; then
@@ -123,6 +149,7 @@ while :; do
             die 'ERROR: "--radius-constraint" requires 4 option arguments (id1 id2 r0 kappa).'
         fi
         ;;
+    # Add COM constraint
     -c|--com-constraint)
         if [ "$2" ]; then
             com_kappa=$2
@@ -131,22 +158,7 @@ while :; do
             die 'ERROR: "--com-constraint" requires a non-empty option argument.'
         fi
         ;;
-    -p|--plumed-file)
-        if [ "$2" ]; then
-            plumed_file=$2
-            shift 2
-        else
-            die 'ERROR: "--plumed-file" requires a non-empty option argument.'
-        fi
-        ;;
-    -o|--out-file)
-        if [ "$2" ]; then
-            out_file=$2
-            shift 2
-        else
-            die 'ERROR: "--out-file" requires a non-empty option argument.'
-        fi
-        ;;
+    # Specify output frequency for PLUMED colvar output
     -f|--out-freq)
         if [ "$2" ]; then
             out_freq=$2
@@ -155,6 +167,7 @@ while :; do
             die 'ERROR: "--out-freq" requires a non-empty option argument.'
         fi
         ;;
+    # Specify how slowly to turn on bias potential during equilibration
     -e|--eq-time)
         if [ "$2" ]; then
             eq_time=$2
