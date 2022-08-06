@@ -1,7 +1,7 @@
 # =============================================================================
 # =============================================================================
 #
-# Parses Required Parameters For Cation & Anion Specifications
+# Parses Required Parameters For Model Specification
 # Written By: Amro Dodin
 #
 # ANIONS Implemented: Cl, Cl2, CO3
@@ -86,6 +86,14 @@ elif "${anion} == CO3" &
     "molecule anion ${FFDIR}co3.mol offset ${tOffset} ${bOffset} ${aOffset} ${dOffset} ${iOffset}"
 
 # =============================================================================
+# Determine Boundary Condition Properties
+# =============================================================================
+if "${BC} == Electrode" then &
+    "variable numElectrodeTypes equal 1" &
+else &
+    "variable numElectrodeTypes equal 0"
+
+# =============================================================================
 # Determine Cation Number
 # =============================================================================
 
@@ -100,7 +108,7 @@ else &
 # Determine Total Number of Types Required
 # =============================================================================
 
-variable atomTypes equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes
+variable atomTypes equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes+v_numElectrodeTypes
 variable bondTypes equal v_numWaterBondTypes+v_numCationBondTypes+v_numAnionBondTypes
 variable angleTypes equal v_numWaterAngleTypes+v_numCationAngleTypes+v_numAnionAngleTypes
 variable dihedralTypes equal v_numCationDihedralTypes+v_numAnionDihedralTypes
