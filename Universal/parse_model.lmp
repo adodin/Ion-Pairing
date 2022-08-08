@@ -88,10 +88,24 @@ elif "${anion} == CO3" &
 # =============================================================================
 # Determine Boundary Condition Properties
 # =============================================================================
-if "${BC} == Electrode" then &
-    "variable numElectrodeTypes equal 1" &
-else &
-    "variable numElectrodeTypes equal 0"
+
+variable numBCTypes equal 0
+
+if "${BC} == box" then &
+    "variable D equal v_L" &
+elif "${BC} == slab" &
+    "variable D equal 3*v_L" &
+elif "${BC} == wall" &
+    "variable D equal v_L+v_ljRAu/v_a" &
+elif "${BC} == electrode" &
+    "variable numBCTypes equal 1" & 
+    "variable D equal v_L+v_ljRAu/v_a+2*v_aAu/v_a" &
+    "variable Ez equal v_L*v_a/v_aAu+v_ljRAu/(v_aAu)" &		       
+    "variable Ezint equal ceil(v_Ez)" &	                    
+    "variable Ezext equal v_Ezint+2" &
+    "variable Ezdisp equal v_Ezint-v_Ez" &
+    "variable Dint equal v_D*v_a/v_aAu-v_Ezdisp"                   
+
 
 # =============================================================================
 # Determine Cation Number
@@ -108,7 +122,7 @@ else &
 # Determine Total Number of Types Required
 # =============================================================================
 
-variable atomTypes equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes+v_numElectrodeTypes
+variable atomTypes equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes+v_numBCTypes
 variable bondTypes equal v_numWaterBondTypes+v_numCationBondTypes+v_numAnionBondTypes
 variable angleTypes equal v_numWaterAngleTypes+v_numCationAngleTypes+v_numAnionAngleTypes
 variable dihedralTypes equal v_numCationDihedralTypes+v_numAnionDihedralTypes
@@ -139,5 +153,6 @@ variable specialsPerAtom equal v_bondsPerAtom
 # Determine Type Numbers for Simple Ions
 # =============================================================================
 
-if "${cationMolecular} == False" then "variable cationType equal 4"
-if "${anionMolecular} == False" then "variable anionType equal 4+v_numCationTypes"
+if "${cationMolecular} == False" then "variable cationType equal v_numWaterTypes+1"
+if "${anionMolecular} == False" then "variable anionType equal v_numWaterTypes+v_numCationTypes+1"
+if "${BC} == electrode" then "variable BCType equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1"
