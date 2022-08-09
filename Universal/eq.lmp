@@ -33,9 +33,19 @@ neigh_modify delay 0
 # Set Up Groups
 # =============================================================================
 
-group waters type 1:3
-group cations type 4:$((3+v_numCationTypes))
-group anions type $((4+v_numCationTypes)):${atomTypes}
+group waters type 1:${numWaterTypes}
+group cations type $((v_numWaterTypes+1)):$((v_numWaterTypes+v_numCationTypes))
+group anions type $((v_numWaterTypes+v_numCationTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes))
+group mobile type 1:$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes))
+if "${BC} == electrode" then &
+    "group electrodes type $((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+v_numBCTypes))" &
+    "region rbot block EDGE EDGE EDGE EDGE EDGE 0" &
+    "region rtop block EDGE EDGE EDGE EDGE 0 EDGE" &
+    "group allbot region rbot" &
+    "group alltop region rtop" &
+    "group bot intersect electrodes allbot" &
+    "group top intersect electrodes alltop" 
+
 
 if "${cationMolecular}==True && ${anionMolecular}==True" then &
     "group molecular union waters cations anions" &
@@ -43,24 +53,29 @@ if "${cationMolecular}==True && ${anionMolecular}==True" then &
 elif "${cationMolecular}==True && ${anionMolecular}==False" &
     "group molecular union waters cations" &
     "group simple union anions" &
+    "set type ${anionType} charge ${qAnion}" &
 elif "${cationMolecular}==False && ${anionMolecular}==True" &
     "group molecular union waters anions" &
     "group simple union cations" &
+    "set type ${vationType} charge ${qCation}" &
 else &
     "group molecular union waters" &
-    "group simple union cations anions"
+    "group simple union cations anions" &
+    "set type ${anionType} charge -${qAnion}" &
+    "set type ${cationType} charge ${qCation}" 
 
 # =============================================================================
 # Set Up Outputs
 # =============================================================================
 
 variable TTarget equal ramp(1,$T)
-variable PTarget equal v_P
 
-thermo_style custom step v_TTarget temp pe v_PTarget press density ke
+thermo_style custom step v_TTarget temp pe density ke
+compute myTemp mobile temp
+thermo_modify temp myTemp
 thermo ${thermoEvery}
 
-dump 1 all atom ${atomEvery} ${DATADIR}box_eq.${label}.lammpstrj
+dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z 
 
 # =============================================================================
 # Set Up Integration Fixes
@@ -68,22 +83,27 @@ dump 1 all atom ${atomEvery} ${DATADIR}box_eq.${label}.lammpstrj
 
 timestep ${dt}
 
-fix rigidNPT molecular rigid/npt/small molecule temp 1 $T ${gtT} iso $P $P ${gtP} dilate all tparam 10 10 3 pchain 20
-#fix rigidNPT molecular rigid/nvt/small molecule temp 1 $T ${gtT} tparam 10 10 3
-fix simpleNPT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
+if "${BC} == wall" then &
+    "change_box all boundary p p f" &
+    "kspace_modify slab 3.0" &
+    "fix wall all wall/lj126 zlo EDGE 0.1 ${ljRAu} 10.0 zhi EDGE 0.1 ${ljRAu} 10.0 units box" &
+elif "${BC} == electrode" &
+    "change_box all boundary p p f" &
+    "kspace_modify slab 3.0" &
+    "fix conp bot electrode/conp -$((v_pot/2)) ${eta} couple top $((v_pot/2)) symm on"
 
-run ${nHeatBox}
+fix rigidNVT molecular rigid/nvt/small molecule temp 1 $T ${gtT} tparam 10 10 3
+fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
 
-unfix rigidNPT
-unfix simpleNPT
+run ${nHeat}
+
+unfix rigidNVT
+unfix simpleNVT
 variable TTarget equal $T
 
-#fix rigidNPT molecular rigid/npt/small molecule temp $T $T ${gtT} iso $P $P ${gtP} dilate all tparam 10 10 3 pchain 20
-#change_box all z scale 3 units box 
-#write_data data.test 
-fix rigidNPT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3
-fix simpleNPT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
+fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3
+fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
 
 compute cz all chunk/atom bin/1d z center 0.5
 
-run ${nEquilBox}
+run ${nEquil}
