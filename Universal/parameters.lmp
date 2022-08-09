@@ -42,6 +42,10 @@ variable S equal floor(random(0,2^16,v_SEED))
 variable pot index 0.0
 variable eta index 1.805
 
+# Skip Flags
+variable skipEquil index False
+variable skipProd index False
+
 # ==========================================================================
 # Output Parameters
 # ==========================================================================
@@ -69,3 +73,4 @@ variable gtT equal v_gT*v_dt
 
 variable nHeat index 5000
 variable nEquil index 5000
+variable nProd index 5000

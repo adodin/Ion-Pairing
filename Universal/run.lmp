@@ -21,7 +21,13 @@ pair_style soft 3.0
 bond_style harmonic 
 angle_style harmonic
 improper_style harmonic
-read_data ${DATADIR}data.${label}.init
+if "${skipEquil}==False" then &
+    "read_data ${DATADIR}data.${label}.init" &
+else &
+    "read_data ${DATADIR}data.${label}.eq nocoeff" &
+    "bond_coeff * 0 0" &
+    "angle_coeff * 0 0" &
+    "improper_coeff * 0 0" 
 
 # Read in Force Field
 include ${FFDIR}ff.${label}.lmp
@@ -78,7 +84,7 @@ thermo ${thermoEvery}
 dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z 
 
 # =============================================================================
-# Set Up Integration Fixes
+# Set Up Overall Integration Fixes
 # =============================================================================
 
 timestep ${dt}
@@ -92,10 +98,23 @@ elif "${BC} == electrode" &
     "kspace_modify slab 3.0" &
     "fix conp bot electrode/conp -$((v_pot/2)) ${eta} couple top $((v_pot/2)) symm on"
 
+
+if "${skipEquil}==True" then &
+    "jump SELF production"
+
+# =============================================================================
+# Run Heating
+# =============================================================================
+
 fix rigidNVT molecular rigid/nvt/small molecule temp 1 $T ${gtT} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
 
 run ${nHeat}
+
+
+# =============================================================================
+# Run Equilibration
+# =============================================================================
 
 unfix rigidNVT
 unfix simpleNVT
@@ -109,3 +128,27 @@ compute cz all chunk/atom bin/1d z center 0.5
 run ${nEquil}
 
 write_data ${DATADIR}data.${label}.eq pair ij
+
+# =============================================================================
+# Run Production
+# =============================================================================
+
+label production
+
+
+
+if "${skipProd}==True" then &
+    quit
+
+if "${skipEquil}==True" then &
+    "variable TTarget equal $T" &
+    "reset_timestep 0 " &
+    "fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3" &
+    "fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10"
+
+undump 1
+dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z 
+
+run ${nProd}
+
+write_data ${DATADIR}data.${label}.prod pair ij
