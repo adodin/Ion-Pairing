@@ -7,6 +7,11 @@
 # =============================================================================
 # =============================================================================
 
+# Load Custom Parameter File from shell input
+variable paramfile index " "
+if "${paramfile} != " then &
+    "include ${paramfile}"
+
 # Model Specifications
 units real
 variable SEED index 1                      # Parent Seed
