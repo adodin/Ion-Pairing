@@ -8,8 +8,8 @@
 # =============================================================================
 
 # Load Custom Parameter File from shell input
-variable paramfile index " "
-if "${paramfile} != " then &
+variable paramfile index False
+if "${paramfile} != False" then &
     "include ${paramfile}"
 
 # Model Specifications
@@ -50,6 +50,9 @@ variable eta index 1.805
 # Skip Flags
 variable skipEquil index False
 variable skipProd index False
+
+# Bias Flags
+variable zBias index False
 
 # ==========================================================================
 # Output Parameters

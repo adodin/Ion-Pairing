@@ -71,19 +71,6 @@ else &
     "set type ${cationType} charge ${qCation}" 
 
 # =============================================================================
-# Set Up Outputs
-# =============================================================================
-
-variable TTarget equal ramp(1,$T)
-
-thermo_style custom step v_TTarget temp pe density ke
-compute myTemp mobile temp
-thermo_modify temp myTemp
-thermo ${thermoEvery}
-
-dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z 
-
-# =============================================================================
 # Set Up Overall Integration Fixes
 # =============================================================================
 
@@ -98,6 +85,82 @@ elif "${BC} == electrode" &
     "kspace_modify slab 3.0" &
     "fix conp bot electrode/conp -$((v_pot/2)) ${eta} couple top $((v_pot/2)) symm on"
 
+variable thermo_spec string "step v_TTarget temp pe density ke"
+
+# Check if no zBias specified
+if "${zBias} == False" then &
+    "jump SELF zBreak"
+
+variable zBiasCounter string 0
+
+# If zBias specified loop through biases
+label zLoop
+
+variable zBiasCounter string $(v_zBiasCounter+1)
+
+variable negative string 1
+
+# Check if ion type is specified & assign ID
+if "${zBias} == id" then &
+    "next zBias" &
+    "variable zBiasId string ${zBias}" &
+elif "${zBias} == c" &
+    "next zBias" &
+    "variable zBiasID string $(count(waters)+v_zBias)" &
+elif "${zBias} == a" &
+    "next zBias" &
+    "variable zBiasID string $(count(waters)+count(cations)+v_zBias)" &
+elif "${zBias} == idm" &
+    "next zBias" &
+    "variable zBiasId string ${zBias}" &
+    "variable negative string -1" &
+elif "${zBias} == cm" &
+    "next zBias" &
+    "variable zBiasID string $(count(waters)+v_zBias)" &
+    "variable negative string -1" &
+elif "${zBias} == am" &
+    "next zBias" &
+    "variable zBiasID string $(count(waters)+count(cations)+v_zBias)" &
+    "variable negative string -1" &
+else &
+    "print 'ERROR: first zBias specifier must be c/s/id[m].'" &
+    "quit 1"
+
+# Assign Equilibrium position & spring constant
+next zBias
+variable z0 string $(v_zBias*v_negative)
+next zBias
+variable k string ${zBias}
+
+print "zBias:"
+print "ID: ${zBiasID}"
+print "z0: ${z0}"
+print "k: $k"
+# Create Fix & Add to Thermodynamic Output
+group zGroup${zBiasCounter} id ${zBiasID}
+group zGroup${zBiasCounter} include molecule
+fix z${zBiasCounter} zGroup${zBiasCounter} spring tether $k NULL NULL ${z0} 0
+compute z${zBiasCounter} zGroup${zBiasCounter} com
+variable thermo_spec string "${thermo_spec} c_z${zBiasCounter}[3]"
+
+# Parse Next zBias
+next zBias
+jump SELF zLoop
+    
+label zBreak
+
+# =============================================================================
+# Set Up Outputs
+# =============================================================================
+
+variable TTarget equal ramp(1,$T)
+
+thermo_style custom ${thermo_spec}
+compute myTemp mobile temp
+thermo_modify temp myTemp
+thermo ${thermoEvery}
+
+dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z 
 
 if "${skipEquil}==True" then &
     "jump SELF production"
@@ -140,14 +203,14 @@ label production
 if "${skipProd}==True" then &
     quit
 
+undump 1
+reset_timestep 0
+dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z 
+
 if "${skipEquil}==True" then &
     "variable TTarget equal $T" &
-    "reset_timestep 0 " &
     "fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3" &
     "fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10"
-
-undump 1
-dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z 
 
 run ${nProd}
 

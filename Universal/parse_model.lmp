@@ -17,16 +17,19 @@
 # =============================================================================
 
 if "(${water} == tip4p)" then &
+    "variable atomsPerWater equal 4" &
     "variable numWaterTypes equal 3" &
     "variable numWaterBondTypes equal 2" &
     "variable numWaterAngleTypes equal 2" &
     "variable numWaterImproperTypes equal 1" &
 elif "(${water} == swm4-ndp)"  &
+    "variable atomsPerWater equal 4" &
     "variable numWaterTypes equal 3" &
     "variable numWaterBondTypes equal 2" &
     "variable numWaterAngleTypes equal 2" &
     "variable numWaterImproperTypes equal 1" &
 elif "${water}==spce" &
+     "variable atomsPerWater equal 3" &
     "variable numWaterTypes equal 2" &
     "variable numWaterBondTypes equal 1" &
     "variable numWaterAngleTypes equal 1" &
@@ -41,6 +44,7 @@ molecule h2o ${FFDIR}${water}.mol
 # Default Values for Simple Cations
 variable cationMolecular string False
 variable qCation equal 1
+variable atomsPerCation equal 1
 variable numCationTypes equal 1
 variable numCationBondTypes equal 0
 variable numCationAngleTypes equal 0
@@ -63,6 +67,7 @@ variable iOffset equal v_numWaterImproperTypes+v_numCationImproperTypes
 # Default Values for Simple Anions
 variable anionMolecular string False
 variable qAnion equal 1
+variable atomsPerAnion equal 1
 variable numAnionTypes equal 1
 variable numAnionBondTypes equal 0
 variable numAnionAngleTypes equal 0
@@ -77,6 +82,7 @@ if "${anion} == Cl2" then &
 elif "${anion} == CO3" &
     "variable anionMolecular string True" &
     "variable qAnion equal 2" &
+    "variable atomsPerAnion equal 4" &
     "variable numAnionTypes equal 2" &
     "variable numAnionBondTypes equal 1" &
     "variable numAnionAngleTypes equal 1" &
