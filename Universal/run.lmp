@@ -270,6 +270,8 @@ label comBreak
 # Set Up Outputs
 # =============================================================================
 
+log eq.${label}.log
+
 variable TTarget equal ramp(1,$T)
 
 thermo_style custom ${thermo_spec}
@@ -320,6 +322,8 @@ if "${skipProd}==True" then &
 
 undump 1
 reset_timestep 0
+
+log prod.${label}.log
 dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z 
 
 if "${skipEquil}==True" then &

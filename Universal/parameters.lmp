@@ -54,6 +54,8 @@ variable skipProd index False
 
 # Bias Flags
 variable zBias index False
+variable rBias index False
+variable comBias index 0
 
 # ==========================================================================
 # Output Parameters
