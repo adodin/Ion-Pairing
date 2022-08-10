@@ -10,7 +10,7 @@
 include parameters.lmp
 include parse_model.lmp
 
-log init.${label}.log
+log ${DATADIR}init.${label}.log
 
 # =============================================================================
 # Create Simulation Box
