@@ -8,10 +8,7 @@
 
 # REQUIRED ARGS: CATION ANION REPLICA_LABEL
 
-# Get Script Directory to make sure we find LAMMPS input Files
-SCRIPTDIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
-# Get Current Working Directory to find Log Files
+# Get Current Working Directory
 WORKINGDIR=$( pwd )
 
 # Parse Required Args
@@ -23,7 +20,9 @@ replica=$1
 shift
 
 # Construct Data Directory Label
-DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/replica${replica}/
+DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/
+mkdir ${DATADIR}
+DATADIR=${DATADIR}replica${replica}/
 
 # Announce Settings
 echo "Script Directory: $SCRIPTDIR"
@@ -40,7 +39,7 @@ mkdir $DATADIR
 cd $DATADIR
 
 # Run Job
-mpirun -np 8 lmp -in ${SCRIPTDIR}min.NaCl.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+mpirun -np 8 lmp -in ${WORKINGDIR}min.NaCl.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
   -v cation $cation -v anion $anion $@
 
 # Move Log File to DATADIR
