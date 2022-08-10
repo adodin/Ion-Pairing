@@ -99,11 +99,15 @@ variable numBCTypes equal 0
 
 if "${BC} == box" then &
     "variable D equal v_L" &
+    "variable comBias index 0" &
 elif "${BC} == slab" &
     "variable D equal 3*v_L" &
+    "variable comBias index ${numWaters}" &
 elif "${BC} == wall" &
     "variable D equal v_L+v_ljRAu/v_a" &
+    "variable comBias index 0" &
 elif "${BC} == electrode" &
+    "variable comBias index 0" &
     "variable numBCTypes equal 1" & 
     "variable D equal v_L+v_ljRAu/v_a+2*v_aAu/v_a" &
     "variable Ez equal v_L*v_a/v_aAu+v_ljRAu/(v_aAu)" &		       

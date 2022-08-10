@@ -87,6 +87,17 @@ elif "${BC} == electrode" &
 
 variable thermo_spec string "step v_TTarget temp pe density ke"
 
+
+# =============================================================================
+# Add Bias Potentials
+# =============================================================================
+
+# Create Group of All Biased Atoms to Exclude from COM Biasing
+group biased empty
+
+# z Biases
+# -----------------------------------------------------------------------------
+
 # Check if no zBias specified
 if "${zBias} == False" then &
     "jump SELF zBreak"
@@ -139,7 +150,8 @@ print "k: $k"
 # Create Fix & Add to Thermodynamic Output
 group zGroup${zBiasCounter} id ${zBiasID}
 group zGroup${zBiasCounter} include molecule
-fix z${zBiasCounter} zGroup${zBiasCounter} spring tether $k NULL NULL ${z0} 0
+group biased union biased zGroup${zBiasCounter}
+fix zBias${zBiasCounter} zGroup${zBiasCounter} spring tether $k NULL NULL ${z0} 0
 compute z${zBiasCounter} zGroup${zBiasCounter} com
 variable thermo_spec string "${thermo_spec} c_z${zBiasCounter}[3]"
 
@@ -149,6 +161,18 @@ jump SELF zLoop
     
 label zBreak
 
+# COM Biases
+# -----------------------------------------------------------------------------
+
+if "${comBias} == 0" then &
+    "jump SELF comBreak"
+
+group comGroup subtract all biased
+fix comBias comGroup spring tether ${comBias} NULL NULL 0 0
+compute COM comGroup com
+variable thermo_spec string "${thermo_spec} c_COM[3]"
+
+label comBreak
 # =============================================================================
 # Set Up Outputs
 # =============================================================================
@@ -169,7 +193,7 @@ if "${skipEquil}==True" then &
 # Run Heating
 # =============================================================================
 
-fix rigidNVT molecular rigid/nvt/small molecule temp 1 $T ${gtT} tparam 10 10 3
+fix rigidNVT molecular rigid/nvt/small molecule temp 1 $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
 
 run ${nHeat}
@@ -183,7 +207,7 @@ unfix rigidNVT
 unfix simpleNVT
 variable TTarget equal $T
 
-fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3
+fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
 
 compute cz all chunk/atom bin/1d z center 0.5
