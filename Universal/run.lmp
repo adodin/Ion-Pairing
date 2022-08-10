@@ -114,25 +114,31 @@ variable negative string 1
 # Check if ion type is specified & assign ID
 if "${zBias} == id" then &
     "next zBias" &
-    "variable zBiasIS string ${zBias}" &
+    "variable zBiasID string ${zBias}" &
+    "variable label string ${label}.z.id${zBias}" &
 elif "${zBias} == c" &
     "next zBias" &
     "variable zBiasID string $(count(waters)+v_zBias)" &
+    "variable label string ${label}.z.c${zBias}" &
 elif "${zBias} == a" &
     "next zBias" &
     "variable zBiasID string $(count(waters)+count(cations)+v_zBias)" &
+    "variable label string ${label}.z.a${zBias}" &
 elif "${zBias} == idm" &
     "next zBias" &
     "variable zBiasID string ${zBias}" &
     "variable negative string -1" &
+    "variable label string ${label}.z.id${zBias}" &
 elif "${zBias} == cm" &
     "next zBias" &
     "variable zBiasID string $(count(waters)+v_zBias)" &
     "variable negative string -1" &
+    "variable label string ${label}.z.c${zBias}" &
 elif "${zBias} == am" &
     "next zBias" &
     "variable zBiasID string $(count(waters)+count(cations)+v_zBias)" &
     "variable negative string -1" &
+    "variable label string ${label}.z.a${zBias}" &
 else &
     "print 'ERROR: first zBias specifier must be c/s/id[m].'" &
     "quit 1"
@@ -154,6 +160,8 @@ group biased union biased zGroup${zBiasCounter}
 fix zBias${zBiasCounter} zGroup${zBiasCounter} spring tether $k NULL NULL ${z0} 0
 compute z${zBiasCounter} zGroup${zBiasCounter} com
 variable thermo_spec string "${thermo_spec} c_z${zBiasCounter}[3]"
+
+variable label string ${label}.${z0}.${k}
 
 # Parse Next zBias
 next zBias
@@ -181,14 +189,17 @@ variable negative string 1
 if "${rBias} == id" then &
     "next rBias" &
     "variable rBiasID1 string ${rBias}" &
+    "variable label string ${label}.r.id${rBias}" &
     "next rBias" &
 elif "${rBias} == c" &
     "next rBias" &
     "variable rBiasID1 string $(count(waters)+v_rBias)" &
+    "variable label string ${label}.r.c${rBias}" &
     "next rBias" &
 elif "${rBias} == a" &
     "next rBias" &
     "variable rBiasID1 string $(count(waters)+count(cations)+v_rBias)" &
+    "variable label string ${label}.r.a${rBias}" &
     "next rBias" &
 else &
     "print 'ERROR: first rBias specifier must be c/s/id.'" &
@@ -197,12 +208,15 @@ else &
 if "${rBias} == id" then &
     "next rBias" &
     "variable rBiasID2 string ${rBias}" &
+    "variable label string ${label}.id${rBias}" &
 elif "${rBias} == c" &
     "next rBias" &
     "variable rBiasID2 string $(count(waters)+v_rBias)" &
+    "variable label string ${label}.c${rBias}" &
 elif "${rBias} == a" &
     "next rBias" &
     "variable rBiasID2 string $(count(waters)+count(cations)+v_rBias)" &
+    "variable label string ${label}.a${rBias}" &
 else &
     "print 'ERROR: first rBias specifier must be c/s/id.'" &
     "quit 1"
@@ -230,6 +244,8 @@ compute r${rBiasCounter}_1 rGroup${rBiasCounter}_1 com
 compute r${rBiasCounter}_2 rGroup${rBiasCounter}_2 com
 variable r${rBiasCounter} equal sqrt((c_r${rBiasCounter}_1[1]-c_r${rBiasCounter}_2[1])^2+(c_r${rBiasCounter}_1[2]-c_r${rBiasCounter}_2[2])^2+(c_r${rBiasCounter}_1[3]-c_r${rBiasCounter}_2[3])^2)
 variable thermo_spec string "${thermo_spec} v_r${rBiasCounter}"
+
+variable label string ${label}.${r0}.$k
 
 # Parse Next zBias
 next rBias
