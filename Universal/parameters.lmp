@@ -25,7 +25,8 @@ variable anion index CO3
 variable BC index box
 
 # System Label & File Locations
-variable label string ${BC}.${water}.${cation}.${anion}
+variable FFLabel string ${water}.${cation}.${anion}
+variable label string ${BC}.${FFLabel}
 variable DATADIR index ./
 variable FFDIR index ../FF/
 

@@ -30,7 +30,7 @@ else &
     "improper_coeff * 0 0" 
 
 # Read in Force Field
-include ${FFDIR}ff.${label}.lmp
+include ${FFDIR}ff.${FFLabel}.lmp
 delete_bonds all multi 
 neighbor 2.0 bin
 neigh_modify delay 0
