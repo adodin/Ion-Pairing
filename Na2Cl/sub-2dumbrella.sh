@@ -5,7 +5,7 @@
 #$ -N Na2Cl-rUS
 #$ -t 1-36
 #$ -V
-#$ -q regular
+#$ -q ibnet
 #$ -hold_jid Na2Cl-min
 
 # Check If Replica Directory Exists

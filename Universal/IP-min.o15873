@@ -1,0 +1,20 @@
+Script Directory: /opt/gridengine/default/spool/compute-0-6/job_scripts
+Data Directory: /home/adodin/DATA/Ion-Pairing/Na.Cl/replica1/
+Cation: Na
+Anion: Cl
+Replica: 1
+SEED: 15873
+Optional Arguments: 
+mkdir: cannot create directory ‘/home/adodin/DATA/Ion-Pairing/Na.Cl/replica1/’: No such file or directory
+/opt/gridengine/default/spool/compute-0-6/job_scripts/15873: line 40: cd: /home/adodin/DATA/Ion-Pairing/Na.Cl/replica1/: No such file or directory
+ERROR on proc 0: Cannot open input script /opt/gridengine/default/spool/compute-0-6/job_scriptsmin.NaCl.lmp: No such file or directory (src/lammps.cpp:518)
+Last command: (unknown)
+--------------------------------------------------------------------------
+MPI_ABORT was invoked on rank 0 in communicator MPI_COMM_WORLD
+with errorcode 1.
+
+NOTE: invoking MPI_ABORT causes Open MPI to kill all MPI processes.
+You may or may not see output from other processes, depending on
+exactly when Open MPI kills them.
+--------------------------------------------------------------------------
+mv: cannot move ‘/home/adodin/CODE/Ion-Pairing/Universal/IP-min.o15873’ to ‘/home/adodin/DATA/Ion-Pairing/Na.Cl/replica1/.’: No such file or directory

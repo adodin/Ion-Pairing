@@ -53,7 +53,7 @@ else &
 #mass * 1.0
 
 # Import Minimization Force Field
-include ${FFDIR}ff.min.${label}.lmp
+include ${FFDIR}ff.min.${FFLabel}.lmp
 
 # Add Boundary Conditions
 if "${BC} == wall" then &

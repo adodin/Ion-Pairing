@@ -9,7 +9,7 @@
 # REQUIRED ARGS: CATION ANION REPLICA_LABEL
 
 # Get Current Working Directory
-WORKINGDIR=$( pwd )
+WORKINGDIR=$( pwd )/
 
 # Parse Required Args
 cation=$1
@@ -34,12 +34,11 @@ let "SEED = ${JOB_ID}"
 echo "SEED: $SEED"
 echo "Optional Arguments: $@"
 
-# Create and Move to DATADIR
+# Create DATADIR
 mkdir $DATADIR
-cd $DATADIR
 
 # Run Job
-mpirun -np 8 lmp -in ${WORKINGDIR}min.NaCl.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+mpirun -np 8 lmp -in init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
   -v cation $cation -v anion $anion $@
 
 # Move Log File to DATADIR
