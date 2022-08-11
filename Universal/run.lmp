@@ -270,8 +270,6 @@ label comBreak
 # Set Up Outputs
 # =============================================================================
 
-log ${DATADIR}eq.${label}.log
-
 variable TTarget equal ramp(1,$T)
 
 thermo_style custom ${thermo_spec}
@@ -279,7 +277,7 @@ compute myTemp mobile temp
 thermo_modify temp myTemp
 thermo ${thermoEvery}
 
-dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z 
+dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
 
 if "${skipEquil}==True" then &
     "jump SELF production"
@@ -323,13 +321,14 @@ if "${skipProd}==True" then &
 undump 1
 reset_timestep 0
 
-log ${DATADIR}prod.${label}.log
-dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z 
-
 if "${skipEquil}==True" then &
     "variable TTarget equal $T" &
+    "read_dump ${DATADIR}eq.${label}.lammpstrj ${nEquil} x y z vx vy vz q ix iy iz" &
+    "reset_timestep 0" &
     "fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3" &
     "fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10"
+
+dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
 
 run ${nProd}
 

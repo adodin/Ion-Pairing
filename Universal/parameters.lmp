@@ -21,7 +21,7 @@ variable cationOverlap index 0.5           # Closest Distance (lattice units) be
 variable anionOverlap index 0.5 
 variable water index tip4p
 variable cation index Na
-variable anion index CO3
+variable anion index Cl
 variable BC index box
 
 # System Label & File Locations
