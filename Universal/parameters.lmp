@@ -85,5 +85,5 @@ variable gtT equal v_gT*v_dt
 # ==========================================================================
 
 variable nHeat index 5000
-variable nEquil index 5000
-variable nProd index 5000
+variable nEquil index 10000
+variable nProd index 500000
