@@ -20,7 +20,7 @@ cation=$1
 shift
 anion=$1
 shift
-BC=${BC}
+BC=$1
 shift
 replica=$1
 shift
