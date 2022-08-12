@@ -6,7 +6,7 @@
 #$ -V
 #$ -q regular
 
-# REQUIRED ARGS: CATION ANION REPLICA_LABEL
+# REQUIRED ARGS: CATION ANION BC REPLICA_LABEL
 
 # Get Current Working Directory
 WORKINGDIR=$( pwd )/
@@ -16,19 +16,24 @@ cation=$1
 shift
 anion=$1
 shift
+BC=$1
+shift
 replica=$1
 shift
 
 # Construct Data Directory Label
 DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/
 mkdir ${DATADIR}
+DATADIR=${DATADIR}${BC}/
+mkdir ${DATADIR}
 DATADIR=${DATADIR}replica${replica}/
 
 # Announce Settings
-echo "Script Directory: $SCRIPTDIR"
+echo "Script Directory: $WORKINGDIR"
 echo "Data Directory: $DATADIR"
 echo "Cation: $cation"
 echo "Anion: $anion"
+echo "Boundary Condition: $BC"
 echo "Replica: $replica"
 let "SEED = ${JOB_ID}"
 echo "SEED: $SEED"
@@ -39,7 +44,7 @@ mkdir $DATADIR
 
 # Run Job
 mpirun -np 8 lmp -in init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
-  -v cation $cation -v anion $anion $@
+  -v cation $cation -v anion $anion -v BC ${BC} $@
 
 # Move Log File to DATADIR
 mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID} ${DATADIR}.
