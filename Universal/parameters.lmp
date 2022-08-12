@@ -74,6 +74,7 @@ variable dt index 1.0
 
 # Thermostat
 variable T index 300
+variable kT  equal 0.00199*${T}
 variable gTEquil index 10
 variable gtTEquil equal v_gT*v_dt
 variable gT index 100
