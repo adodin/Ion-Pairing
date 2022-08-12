@@ -29,6 +29,11 @@ else &
     "angle_coeff * 0 0" &
     "improper_coeff * 0 0" 
 
+if "${BC} == electrode" then &
+    "variable label string ${label}.pot.${pot}"
+
+log ${DATADIR}eq.${label}.log
+
 # Read in Force Field
 include ${FFDIR}ff.${FFLabel}.lmp
 delete_bonds all multi 
@@ -252,7 +257,7 @@ fix rBias${rBiasCounter} rGroup${rBiasCounter}_1 spring couple rGroup${rBiasCoun
 compute r${rBiasCounter}_1 rGroup${rBiasCounter}_1 com
 compute r${rBiasCounter}_2 rGroup${rBiasCounter}_2 com
 variable r${rBiasCounter} equal sqrt((c_r${rBiasCounter}_1[1]-c_r${rBiasCounter}_2[1])^2+(c_r${rBiasCounter}_1[2]-c_r${rBiasCounter}_2[2])^2+(c_r${rBiasCounter}_1[3]-c_r${rBiasCounter}_2[3])^2)
-variable rDev${rBiasCounter} equal (v_r${rBiasCounter}[3]-v_rTarget${rBiasCounter})/v_rStDev${rBiasCounter}
+variable rDev${rBiasCounter} equal (v_r${rBiasCounter}-v_rTarget${rBiasCounter})/v_rStDev${rBiasCounter}
 variable thermo_spec string "${thermo_spec} v_rTarget${rBiasCounter} v_rDev${rBiasCounter} v_r${rBiasCounter}"
 
 variable label string ${label}.${r0}.$k
@@ -294,6 +299,8 @@ thermo_modify temp myTemp
 thermo ${thermoEvery}
 
 dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
+if "$((count(biased))) > 0" then &
+    "dump 2 biased custom ${atomEvery} ${DATADIR}bias.eq.${label}.lammpstrj id mol type x y z"
 
 if "${skipEquil}==True" then &
     "jump SELF production"
@@ -335,7 +342,11 @@ if "${skipProd}==True" then &
     quit
 
 undump 1
+if "$((count(biased))) > 0" then &
+    "undump 2"
 reset_timestep 0
+
+log ${DATADIR}eq.${label}.log
 
 if "${skipEquil}==True" then &
     "variable TTarget equal $T" &
@@ -345,6 +356,8 @@ if "${skipEquil}==True" then &
     "fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10"
 
 dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
+if "$((count(biased))) > 0" then &
+    "dump 2 biased custom ${atomEvery} ${DATADIR}bias.prod.${label}.lammpstrj id mol type x y z"
 
 run ${nProd}
 
