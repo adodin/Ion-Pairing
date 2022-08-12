@@ -91,7 +91,7 @@ for (( i=0; i<=${#biasTypes[@]}-1; i++ )); do
   if [[ (( $(echo "$b0 < 0" |bc -l) )) && ${biasTypes[i]} == z ]]; then
     echo "Applying Minus"
     bID=$(sed -E "s/^(.) /\1m / " <<< ${biasIDs[i]})
-    b0=$(bc <<< "-1*$b0")
+    b0=${b0//-}
   else
     bID=${biasIDs[i]}
   fi
