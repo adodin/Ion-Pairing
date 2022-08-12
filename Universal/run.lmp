@@ -286,7 +286,7 @@ if "${skipEquil}==True" then &
 # Run Heating
 # =============================================================================
 
-fix rigidNVT molecular rigid/nvt/small molecule temp 1 $T ${gtTEquil} tparam 10 10 3
+fix rigidNVT molecular rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
 
 run ${nHeat}
@@ -300,7 +300,7 @@ unfix rigidNVT
 unfix simpleNVT
 variable TTarget equal $T
 
-fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtTEquil} tparam 10 10 3
+fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
 
 compute cz all chunk/atom bin/1d z center 0.5
@@ -325,7 +325,7 @@ if "${skipEquil}==True" then &
     "variable TTarget equal $T" &
     "read_dump ${DATADIR}eq.${label}.lammpstrj ${nEquil} x y z vx vy vz q ix iy iz" &
     "reset_timestep 0" &
-    "fix rigidNVT molecular rigid/nvt/small molecule temp $T $T ${gtT} tparam 10 10 3" &
+    "fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3" &
     "fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10"
 
 dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
