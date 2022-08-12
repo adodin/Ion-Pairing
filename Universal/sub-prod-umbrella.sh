@@ -81,11 +81,7 @@ while :; do
   esac
 done
 
-JOB_ID=1
-
-nMax=$(prod ${biasNs[@]})
 echo "==================================================="
-for ((SGE_TASK_ID=1; SGE_TASK_ID<=$nMax; SGE_TASK_ID++)); do
 biasString=""
 echo "TASK: $SGE_TASK_ID"
 for (( i=0; i<=${#biasTypes[@]}-1; i++ )); do
@@ -100,8 +96,6 @@ for (( i=0; i<=${#biasTypes[@]}-1; i++ )); do
   echo "  K: ${biasKs[i]}"
 done
 echo "Bias String: ${biasString}"
-echo "==================================================="
-done
 echo "==================================================="
 
 # Announce Settings
@@ -119,7 +113,7 @@ echo "Optional Arguments: $@"
 mkdir $DATADIR
 
 # Run Job
-mpirun -np 8 lmp -in run.lmp -v skipProd True -v DATADIR ${DATADIR} -v SEED $SEED \
+mpirun -np 8 lmp -in run.lmp -v skipEquil True -v DATADIR ${DATADIR} -v SEED $SEED \
   -v cation $cation -v anion $anion -v BC $BC ${biasString} $@
 
 # Move Log File to DATADIR
