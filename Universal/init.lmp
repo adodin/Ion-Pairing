@@ -39,15 +39,15 @@ create_atoms 0 region water_box mol h2o $S
 
 # Create Cations
 if  "${cationMolecular} == True" then &
-    "create_atoms 0 random ${numCations} $S water_box mol cation $S overlap ${cationOverlap} maxtry 10000 units lattice" &
+    "create_atoms 0 random ${numCations} $S water_box mol cation $S units lattice" &
 else &
-    "create_atoms ${cationType} random ${numCations} $S water_box overlap ${cationOverlap} maxtry 10000 units lattice" &
+    "create_atoms ${cationType} random ${numCations} $S water_box overlap ${cationOverlap} maxtry 100000 units lattice" &
 
 # Create Anions
 if  "${anionMolecular} == True" then &
-    "create_atoms 0 random ${numAnions} $S water_box mol anion $S overlap ${anionOverlap} maxtry 100000 units lattice" &
+    "create_atoms 0 random ${numAnions} $S water_box mol anion $S units lattice" &
 else &
-    "create_atoms ${anionType} random ${numAnions} $S water_box overlap ${anionOverlap} maxtry 100000 units lattice" &
+    "create_atoms ${anionType} random ${numAnions} $S water_box overlap ${anionOverlap} maxtry 1000000 units lattice" &
 
 # =============================================================================
 # Relax Overlap

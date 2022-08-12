@@ -68,7 +68,7 @@ elif "${cationMolecular}==True && ${anionMolecular}==False" &
 elif "${cationMolecular}==False && ${anionMolecular}==True" &
     "group molecular union waters anions" &
     "group simple union cations" &
-    "set type ${vationType} charge ${qCation}" &
+    "set type ${cationType} charge ${qCation}" &
 else &
     "group molecular union waters" &
     "group simple union cations anions" &
