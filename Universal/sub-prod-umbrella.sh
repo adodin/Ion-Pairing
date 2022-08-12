@@ -117,4 +117,4 @@ mpirun -np 8 lmp -in run.lmp -v skipEquil True -v DATADIR ${DATADIR} -v SEED $SE
   -v cation $cation -v anion $anion -v BC $BC ${biasString} $@
 
 # Move Log File to DATADIR
-mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID} ${DATADIR}.
+mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID}.${SGE_TASK_ID} ${DATADIR}.
