@@ -88,7 +88,7 @@ for (( i=0; i<=${#biasTypes[@]}-1; i++ )); do
   fDiv=$(prod ${biasNs[@]:$((i+1))})
   ind=$(((($SGE_TASK_ID-1)/$fDiv)%${biasNs[i]}))
   b0=$(bc <<< "${biasMins[i]}+${biasDs[i]}*$ind")
-  if [[ (( $(echo "$b0 < 0" |bc -l) )) && ${biasTypes[i]} == z ]]; then
+  if [[ (( $(echo "$b0 < 0" |bc -l) == 1 )) && ${biasTypes[i]} == z ]]; then
     echo "Applying Minus"
     bID=$(sed -E "s/^(.) /\1m / " <<< ${biasIDs[i]})
     b0=${b0//-}
