@@ -5,25 +5,25 @@ sub_string=" "
 while :; do
    case $1 in
       -swm4-ndp)
-         sub_string=${sub_string}" s/^$counter .*/& \#ODw/ \n "
+         sub_string=${sub_string}" s/^$counter .*/& \# ODw/ \n "
          counter=$(( counter + 1 ))
-         sub_string=${sub_string}" s/^$counter .*/& \#H/ \n "
+         sub_string=${sub_string}" s/^$counter .*/& \# H/ \n "
          counter=$(( counter + 1 ))
-         sub_string=${sub_string}" s/^$counter .*/& \#M/ \n "
+         sub_string=${sub_string}" s/^$counter .*/& \# M/ \n "
          counter=$(( counter + 1 ))
          shift
       ;;
       -CO3)
-         sub_string=${sub_string}" s/^$counter .*/& \#C/ \n"
+         sub_string=${sub_string}" s/^$counter .*/& \# C/ \n"
          counter=$(( counter + 1 ))
-         sub_string=${sub_string}" s/^$counter .*/& \#Oc/ \n"
+         sub_string=${sub_string}" s/^$counter .*/& \# Oc/ \n"
          counter=$(( counter + 1 ))
          shift
       ;;
       -*)
          el=$1
          el=${el//-}
-         sub_string=${sub_string}" s/^$counter .*/& \#${el}/ \n"
+         sub_string=${sub_string}" s/^$counter .*/& \# ${el}/ \n"
          counter=$(( counter + 1 ))
          shift
          ;;
