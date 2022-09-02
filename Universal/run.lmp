@@ -84,7 +84,7 @@ timestep ${dt}
 if "${BC} == wall" then &
     "change_box all boundary p p f" &
     "kspace_modify slab 3.0" &
-    "fix wall all wall/lj126 zlo EDGE 0.1 ${ljRAu} 10.0 zhi EDGE 0.1 ${ljRAu} 10.0 units box" &
+    "fix wall all wall/lj126 zlo EDGE 0.1 ${ljRAu} 12.0 zhi EDGE 0.1 ${ljRAu} 12.0 units box" &
 elif "${BC} == electrode" &
     "change_box all boundary p p f" &
     "kspace_modify slab 3.0" &
