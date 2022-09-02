@@ -7,3 +7,4 @@ thermo.*
 *.log
 .DS_Store
 *.csv
+Universal/simple_analysis.ipynb

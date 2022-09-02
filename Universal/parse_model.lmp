@@ -98,7 +98,7 @@ elif "${anion} == CO3" &
 variable numBCTypes equal 0
 
 if "${BC} == box" then &
-    "variable D equal v_L" &
+    "variable D equal v_Lxy" &
     "variable comBias index 0" &
 elif "${BC} == slab" &
     "variable D equal 3*v_L" &
