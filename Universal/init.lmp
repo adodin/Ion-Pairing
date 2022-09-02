@@ -21,7 +21,7 @@ units real
 lattice sc $a
 
 atom_style full
-region box block -$L $L -$L $L -$D $D units lattice
+region box block -${Lxy} ${Lxy} -${Lxy} ${Lxy} -$D $D units lattice
 create_box ${atomTypes} box bond/types ${bondTypes} angle/types ${angleTypes} &
     dihedral/types ${dihedralTypes} improper/types ${improperTypes} &
     extra/bond/per/atom ${bondsPerAtom} extra/angle/per/atom ${anglesPerAtom} &

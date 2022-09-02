@@ -98,7 +98,7 @@ variable thermo_spec string "step v_TTarget temp pe density ke"
 # =============================================================================
 
 # Create Group of All Biased Atoms to Exclude from COM Biasing
-group biased empty
+group biased union anions cations
 
 # z Biases
 # -----------------------------------------------------------------------------
@@ -171,7 +171,7 @@ compute z${zBiasCounter} zGroup${zBiasCounter} com
 variable zDev${zBiasCounter} equal (c_z${zBiasCounter}[3]-v_zTarget${zBiasCounter})/v_zStDev${zBiasCounter}
 variable thermo_spec string "${thermo_spec} v_zTarget${zBiasCounter} v_zDev${zBiasCounter} c_z${zBiasCounter}[3]"
 
-variable label string ${label}.${z0}.${k}
+variable label string ${label}.${z0}.k.${k}
 
 # Parse Next zBias
 next zBias
@@ -260,7 +260,7 @@ variable r${rBiasCounter} equal sqrt((c_r${rBiasCounter}_1[1]-c_r${rBiasCounter}
 variable rDev${rBiasCounter} equal (v_r${rBiasCounter}-v_rTarget${rBiasCounter})/v_rStDev${rBiasCounter}
 variable thermo_spec string "${thermo_spec} v_rTarget${rBiasCounter} v_rDev${rBiasCounter} v_r${rBiasCounter}"
 
-variable label string ${label}.${r0}.$k
+variable label string ${label}.${r0}.k.$k
 
 # Parse Next zBias
 next rBias
