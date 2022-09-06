@@ -43,8 +43,19 @@ echo "Optional Arguments: $@"
 mkdir $DATADIR
 
 # Run Job
-mpirun -np 8 lmp -in init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
-  -v cation $cation -v anion $anion -v BC ${BC} $@
+run_min=True
+label=${}
+while [[ $run_min == True ]]; do
+  mpirun -np 8 lmp -in init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+    -v cation $cation -v anion $anion -v BC ${BC} $@
+  if grep -q "WARNING: Only inserted" ${DATADIR}/data.${label}.init; then
+    echo "Failed To Place All Ions. Trying Again"
+    SEED=$((SEED+1))
+  else
+    run_min=False
+  fi
+done
+
 
 # Move Log File to DATADIR
 mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID} ${DATADIR}.
