@@ -44,7 +44,7 @@ mkdir $DATADIR
 
 # Run Job
 run_min=True
-label=${}
+label=$BC.tip4p.$cation.$anion
 while [[ $run_min == True ]]; do
   mpirun -np 8 lmp -in init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
     -v cation $cation -v anion $anion -v BC ${BC} $@
