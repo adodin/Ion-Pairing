@@ -36,7 +36,7 @@ log ${DATADIR}eq.${label}.log
 
 # Read in Force Field
 include ${FFDIR}ff.${FFLabel}.lmp
-delete_bonds all multi 
+#delete_bonds all multi 
 neighbor 2.0 bin
 neigh_modify delay 0
 
@@ -299,12 +299,20 @@ thermo_modify temp myTemp
 thermo ${thermoEvery}
 
 dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
+#dump 1 all custom 1 ${DATADIR}eq.${label}.lammpstrj id mol type q x y z vx vy vz fx fy fz ix iy iz
 if "$((count(biased))) > 0" then &
     "dump 2 biased custom ${atomEvery} ${DATADIR}bias.eq.${label}.lammpstrj id mol type x y z"
 
 if "${skipEquil}==True" then &
     "jump SELF production"
 
+
+fix stabilize all nve/limit 0.1
+run ${nStabilize}
+unfix stabilize
+
+velocity all set 0 0 0
+delete_bonds all multi 
 # =============================================================================
 # Run Heating
 # =============================================================================

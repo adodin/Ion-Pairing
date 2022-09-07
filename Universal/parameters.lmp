@@ -86,6 +86,7 @@ variable gtT equal v_gT*v_dt
 # Equilibration Parameters
 # ==========================================================================
 
+variable nStabilize index 0
 variable nHeat index 50000
 variable nEquil index 250000
 variable nProd index 1000000
