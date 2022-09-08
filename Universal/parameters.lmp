@@ -16,10 +16,9 @@ if "${paramfile} != False" then &
 units real
 processors * * 1                           # Does not split along z to minimize wasted processors in slab
 variable SEED index 1                      # Parent Seed
-variable numWaters index 500               # Target Number of Waters
 variable numAnions index 1
-variable cationOverlap index 0.75           # Closest Distance (lattice units) between Water and Ions (requires LAMMPS 06/22/2022 or later)
-variable anionOverlap index 0.75 
+variable cationOverlap index 0.00001       # Closest Distance (lattice units) between Water and Ions (requires LAMMPS 06/22/2022 or later)
+variable anionOverlap index 0.00001 
 variable water index tip4p
 variable cation index Na
 variable anion index Cl
@@ -37,11 +36,11 @@ variable MR  equal 18.0        # Molar Mass (g/mol)
 variable NA  equal 6.022e23    # Avogadro's Constant (1/mol)
 
 # Calculate Required Box Size & Lattice Size
-variable a equal "(v_MR/(v_rho * v_NA))^(1/3)*1e8"
+variable a equal "(v_MR/(v_rho * v_NA))^(1/3)*1e8"      # Water Lattice constant (3.103 A)
 variable ljRAu equal 3.16435
 variable aAu equal 4.07
-variable L equal floor(v_numWaters^(1/3))/(2^(1/3))
-variable Lxy equal ceil(v_L/2)
+variable Lz index 6
+variable Lxy index 3
 
 # Seed Generator
 variable S equal floor(random(0,2^16,v_SEED))

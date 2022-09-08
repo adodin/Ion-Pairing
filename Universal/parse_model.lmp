@@ -101,17 +101,17 @@ if "${BC} == box" then &
     "variable D equal v_Lxy" &
     "variable comBias index 0" &
 elif "${BC} == slab" &
-    "variable D equal 3*v_L" &
+    "variable D equal 3*v_Lz" &
     "variable comBias index ${numWaters}" &
 elif "${BC} == wall" &
-    "variable D equal v_L+v_ljRAu/v_a" &
+    "variable D equal v_Lz+v_ljRAu/v_a" &
     "variable comBias index 0" &
 elif "${BC} == electrode" &
     "variable FFLabel string ${label}" &
     "variable comBias index 0" &
     "variable numBCTypes equal 1" & 
-    "variable D equal v_L+v_ljRAu/v_a+2*v_aAu/v_a" &
-    "variable Ez equal v_L*v_a/v_aAu+v_ljRAu/(v_aAu)" &		       
+    "variable D equal v_Lz+v_ljRAu/v_a+2*v_aAu/v_a" &
+    "variable Ez equal v_Lz*v_a/v_aAu+v_ljRAu/(v_aAu)" &		       
     "variable Ezint equal ceil(v_Ez)" &	                    
     "variable Ezext equal v_Ezint+2" &
     "variable Ezdisp equal v_Ezint-v_Ez" &
