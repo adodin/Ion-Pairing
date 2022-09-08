@@ -85,7 +85,7 @@ elif "${BC} == electrode" &
 thermo_style custom step pe density fmax fnorm
 thermo 10
 
-dump 1 all atom 1 ${DATADIR}init.${label}.lammpstrj
+dump 1 all atom ${minEvery} ${DATADIR}init.${label}.lammpstrj
 
 minimize 0 0 1000 10000
 

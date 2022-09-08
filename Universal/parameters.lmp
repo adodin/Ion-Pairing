@@ -63,7 +63,9 @@ variable rBias index False
 # ==========================================================================
 
 variable thermoEvery index 250
-variable atomEvery index 250
+variable cvEvery index 250
+variable atomEvery index 1000
+variable minEvery index 1
 
 # ==========================================================================
 # Integrator Parameters
