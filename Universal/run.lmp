@@ -334,7 +334,11 @@ run ${nStabilize}
 unfix stabilize
 
 velocity all set 0 0 0
-delete_bonds all multi 
+if "${pol} == Drude" then &
+    "delete_bonds ATOMS multi" &
+else &
+    "delete_bonds all multi "
+
 # =============================================================================
 # Run Heating
 # =============================================================================
@@ -410,7 +414,7 @@ if "${pol} == Drude" then &
 fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3
 fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
 if "${pol} == Drude" then &
-    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
+    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTD}" &
     "fix DrudeInverse all drude/transform/inverse"
 
 dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz

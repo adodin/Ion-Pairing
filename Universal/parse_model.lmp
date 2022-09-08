@@ -24,7 +24,7 @@ if "(${water} == tip4p)" then &
     "variable numWaterBondTypes equal 2" &
     "variable numWaterAngleTypes equal 2" &
     "variable numWaterImproperTypes equal 1" &
-elif "(${water} == swm4-ndp)" &
+elif "(${water} == swm4ndp)" &
     "variable atomsPerWater equal 4" &
     "variable numWaterTypes equal 3" &
     "variable numWaterBondTypes equal 2" &
@@ -152,7 +152,7 @@ variable improperTypes equal v_numWaterImproperTypes+v_numCationImproperTypes+v_
 
 if "${pol} == Drude" then &
     "variable DrudeTypesLower equal v_atomTypes+1" &
-    "variable DrudeTypesUpper equal v_atomTypes+v_waterDrudeTypes+v_cationDrudeTypes+v_anionDrudeTypes"
+    "variable DrudeTypesUpper equal v_atomTypes+v_numWaterDrudeTypes+v_numCationDrudeTypes+v_numAnionDrudeTypes"
 
 # =============================================================================
 # Determine Number of Quantities Per Atom

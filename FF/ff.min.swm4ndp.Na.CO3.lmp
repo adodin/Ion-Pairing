@@ -16,7 +16,7 @@ pair_coeff * * 5.0
 
 bond_style harmonic
 bond_coeff 1 1e5 0.9572
-bond_coeff 2 1e5 0.15
+bond_coeff 2 1e5 0.24034
 bond_coeff 3 1e5 1.28
 
 angle_style harmonic

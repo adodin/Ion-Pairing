@@ -82,6 +82,11 @@ variable gtTEquil equal v_gT*v_dt
 variable gT index 100
 variable gtT equal v_gT*v_dt
 
+variable TD index 300
+variable gTDEquil index 10
+variable gtTDEquil equal v_gTD*v_dt
+variable gTD index 100
+variable gtTD equal v_gTD*v_dt
 # ==========================================================================
 # Equilibration Parameters
 # ==========================================================================
