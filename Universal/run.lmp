@@ -32,6 +32,10 @@ else &
 if "${BC} == electrode" then &
     "variable label string ${label}.pot.${pot}"
 
+if "${pol} != False" then &
+    "variable label string ${pol}.${label}" &
+    "variable FFLabel string ${pol}.${FFLabel}"
+
 log ${DATADIR}eq.${label}.log
 
 # Read in Force Field
@@ -74,6 +78,15 @@ else &
     "group simple union cations anions" &
     "set type ${anionType} charge -${qAnion}" &
     "set type ${cationType} charge ${qCation}" 
+
+# =============================================================================
+# Set Up ECC scaling
+# =============================================================================
+
+if "${pol} == ECC" then &
+    "variable charge atom 0.75*q" &
+    "set type ${anionType} charge v_charge" & 
+    "set type ${cationType} charge v_charge" 
 
 # =============================================================================
 # Set Up Overall Integration Fixes

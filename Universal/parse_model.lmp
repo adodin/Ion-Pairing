@@ -16,7 +16,15 @@
 # Determine Water Model Properties
 # =============================================================================
 
+variable numWaterDrudeTypes equal 1
+
 if "(${water} == tip4p)" then &
+    "variable atomsPerWater equal 4" &
+    "variable numWaterTypes equal 3" &
+    "variable numWaterBondTypes equal 2" &
+    "variable numWaterAngleTypes equal 2" &
+    "variable numWaterImproperTypes equal 1" &
+elif "(${water} == swm4-ndp)" &
     "variable atomsPerWater equal 4" &
     "variable numWaterTypes equal 3" &
     "variable numWaterBondTypes equal 2" &
@@ -29,7 +37,7 @@ elif "(${water} == swm4-ndp)"  &
     "variable numWaterAngleTypes equal 2" &
     "variable numWaterImproperTypes equal 1" &
 elif "${water}==spce" &
-     "variable atomsPerWater equal 3" &
+    "variable atomsPerWater equal 3" &
     "variable numWaterTypes equal 2" &
     "variable numWaterBondTypes equal 1" &
     "variable numWaterAngleTypes equal 1" &
@@ -46,6 +54,7 @@ variable cationMolecular string False
 variable qCation equal 1
 variable atomsPerCation equal 1
 variable numCationTypes equal 1
+variable numCationDrudeTypes equal 1
 variable numCationBondTypes equal 0
 variable numCationAngleTypes equal 0
 variable numCationDihedralTypes equal 0
@@ -69,6 +78,7 @@ variable anionMolecular string False
 variable qAnion equal 1
 variable atomsPerAnion equal 1
 variable numAnionTypes equal 1
+variable numAnionDrudeTypes equal 1
 variable numAnionBondTypes equal 0
 variable numAnionAngleTypes equal 0
 variable numAnionDihedralTypes equal 0
@@ -84,6 +94,7 @@ elif "${anion} == CO3" &
     "variable qAnion equal 2" &
     "variable atomsPerAnion equal 4" &
     "variable numAnionTypes equal 2" &
+    "variable numAnionDrudeTypes equal 2" &
     "variable numAnionBondTypes equal 1" &
     "variable numAnionAngleTypes equal 1" &
     "variable numAnionImproperTypes equal 1" &
@@ -115,7 +126,7 @@ elif "${BC} == electrode" &
     "variable Ezint equal ceil(v_Ez)" &	                    
     "variable Ezext equal v_Ezint+2" &
     "variable Ezdisp equal v_Ezint-v_Ez" &
-    "variable Dint equal v_D*v_a/v_aAu-v_Ezdisp"                   
+    "variable Dint equal v_D*v_a/v_aAu-v_Ezdisp"
 
 
 # =============================================================================
