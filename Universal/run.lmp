@@ -21,6 +21,11 @@ pair_style soft 3.0
 bond_style harmonic 
 angle_style harmonic
 improper_style harmonic
+
+if "${pol} == Drude" then &
+    "variable label string ${pol}.${label}" &
+    "variable FFLabel string ${pol}.${FFLabel}"
+
 if "${skipEquil}==False" then &
     "read_data ${DATADIR}data.${label}.init" &
 else &
@@ -32,7 +37,7 @@ else &
 if "${BC} == electrode" then &
     "variable label string ${label}.pot.${pot}"
 
-if "${pol} != False" then &
+if "${pol} == ECC" then &
     "variable label string ${pol}.${label}" &
     "variable FFLabel string ${pol}.${FFLabel}"
 
@@ -78,6 +83,10 @@ else &
     "group simple union cations anions" &
     "set type ${anionType} charge -${qAnion}" &
     "set type ${cationType} charge ${qCation}" 
+
+if "${pol} == Drude" then &
+    "group ATOMS type 1:${atomTypes}" &
+    "group DRUDE type ${DrudeTypesLower}:${DrudeTypesUpper}"
 
 # =============================================================================
 # Set Up ECC scaling
@@ -330,8 +339,13 @@ delete_bonds all multi
 # Run Heating
 # =============================================================================
 
+if "${pol} == Drude" then &
+    "fix DrudeDirect all drude/transform/direct"
 fix rigidNVT molecular rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
+if "${pol} == Drude" then &
+    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
+    "fix DrudeInverse all drude/transform/inverse"
 
 run ${nHeat}
 
@@ -340,12 +354,21 @@ run ${nHeat}
 # Run Equilibration
 # =============================================================================
 
+if "${pol} == Drude" then &
+    "unfix DrudeDirect" &
+    "unfix DrudeNVT" &
+    "unfix DrudeInverse"
 unfix rigidNVT
 unfix simpleNVT
 variable TTarget equal $T
 
+if "${pol} == Drude" then &
+    "fix DrudeDirect all drude/transform/direct"
 fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
+if "${pol} == Drude" then &
+    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
+    "fix DrudeInverse all drude/transform/inverse"
 
 compute cz all chunk/atom bin/1d z center 0.5
 
@@ -367,14 +390,28 @@ if "$((count(biased))) > 0" then &
     "undump 2"
 reset_timestep 0
 
+if "${pol} == Drude" then &
+    "unfix DrudeDirect" &
+    "unfix DrudeNVT" &
+    "unfix DrudeInverse"
+unfix rigidNVT
+unfix simpleNVT
+
 log ${DATADIR}eq.${label}.log
 
 if "${skipEquil}==True" then &
-    "variable TTarget equal $T" &
     "read_dump ${DATADIR}eq.${label}.lammpstrj ${nEquil} x y z vx vy vz q ix iy iz" &
-    "reset_timestep 0" &
-    "fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3" &
-    "fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10"
+    "reset_timestep 0"
+
+variable TTarget equal $T
+
+if "${pol} == Drude" then &
+    "fix DrudeDirect all drude/transform/direct"
+fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3
+fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
+if "${pol} == Drude" then &
+    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
+    "fix DrudeInverse all drude/transform/inverse"
 
 dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
 if "$((count(biased))) > 0" then &

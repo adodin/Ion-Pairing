@@ -150,6 +150,10 @@ variable angleTypes equal v_numWaterAngleTypes+v_numCationAngleTypes+v_numAnionA
 variable dihedralTypes equal v_numCationDihedralTypes+v_numAnionDihedralTypes
 variable improperTypes equal v_numWaterImproperTypes+v_numCationImproperTypes+v_numAnionImproperTypes
 
+if "${pol} == Drude" then &
+    "variable DrudeTypesLower equal v_atomTypes+1" &
+    "variable DrudeTypesUpper equal v_atomTypes+v_waterDrudeTypes+v_cationDrudeTypes+v_anionDrudeTypes"
+
 # =============================================================================
 # Determine Number of Quantities Per Atom
 # =============================================================================
