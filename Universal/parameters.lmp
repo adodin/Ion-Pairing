@@ -24,6 +24,7 @@ variable cation index Na
 variable anion index Cl
 variable BC index box
 variable pol index False
+variable ECC index 0.75
 
 # System Label & File Locations
 variable FFLabel string ${water}.${cation}.${anion}

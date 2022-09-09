@@ -93,7 +93,7 @@ if "${pol} == Drude" then &
 # =============================================================================
 
 if "${pol} == ECC" then &
-    "variable charge atom 0.75*q" &
+    "variable charge atom v_ECC*q" &
     "set type ${anionType} charge v_charge" & 
     "set type ${cationType} charge v_charge" 
 
