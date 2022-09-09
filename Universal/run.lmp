@@ -300,7 +300,7 @@ variable cStDev equal sqrt(v_kT/${comBias})
 
 variable comTarget equal 0
 group comGroup subtract all biased
-fix comBias comGroup spring tether ${comBias} NULL NULL 0 0
+fix comBias comGroup spring tether ${kCOM} NULL NULL 0 0
 compute COM comGroup com
 
 variable cDev equal (c_COM[3])/v_cStDev
