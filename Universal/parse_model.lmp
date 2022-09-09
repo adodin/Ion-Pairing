@@ -113,7 +113,7 @@ if "${BC} == box" then &
     "variable comBias index 0" &
 elif "${BC} == slab" &
     "variable D equal 3*v_Lz" &
-    "variable comBias index ${numWaters}" &
+    "variable comBias index ${kBias}" &
 elif "${BC} == wall" &
     "variable D equal v_Lz+v_ljRAu/v_a" &
     "variable comBias index 0" &
