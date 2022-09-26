@@ -14,7 +14,7 @@ if "${paramfile} != False" then &
 
 # Model Specifications
 units real
-processors * * 1                           # Does not split along z to minimize wasted processors in slab
+#processors * * 1                           # Does not split along z to minimize wasted processors in slab
 variable SEED index 1                      # Parent Seed
 variable numAnions index 1
 variable cationOverlap index 0.00001       # Closest Distance (lattice units) between Water and Ions (requires LAMMPS 06/22/2022 or later)

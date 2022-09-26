@@ -191,7 +191,7 @@ group biased union biased zGroup${zBiasCounter}
 fix zBias${zBiasCounter} zGroup${zBiasCounter} spring tether $k NULL NULL ${z0} 0
 compute z${zBiasCounter} zGroup${zBiasCounter} com
 variable zDev${zBiasCounter} equal (c_z${zBiasCounter}[3]-v_zTarget${zBiasCounter})/v_zStDev${zBiasCounter}
-variable thermo_spec string "${thermo_spec} v_zTarget${zBiasCounter} v_zDev${zBiasCounter} c_z${zBiasCounter}[3]"
+variable thermo_spec string "${thermo_spec} v_zTarget${zBiasCounter} c_z${zBiasCounter}[3] f_zBias${zBiasCounter}"
 
 variable label string ${label}.${z0}.k.${k}
 
@@ -280,7 +280,7 @@ compute r${rBiasCounter}_1 rGroup${rBiasCounter}_1 com
 compute r${rBiasCounter}_2 rGroup${rBiasCounter}_2 com
 variable r${rBiasCounter} equal sqrt((c_r${rBiasCounter}_1[1]-c_r${rBiasCounter}_2[1])^2+(c_r${rBiasCounter}_1[2]-c_r${rBiasCounter}_2[2])^2+(c_r${rBiasCounter}_1[3]-c_r${rBiasCounter}_2[3])^2)
 variable rDev${rBiasCounter} equal (v_r${rBiasCounter}-v_rTarget${rBiasCounter})/v_rStDev${rBiasCounter}
-variable thermo_spec string "${thermo_spec} v_rTarget${rBiasCounter} v_rDev${rBiasCounter} v_r${rBiasCounter}"
+variable thermo_spec string "${thermo_spec} v_rTarget${rBiasCounter} v_r${rBiasCounter} f_rBias${rBiasCounter}"
 
 variable label string ${label}.${r0}.k.$k
 
@@ -305,7 +305,7 @@ compute COM comGroup com
 
 variable cDev equal (c_COM[3])/v_cStDev
 
-variable thermo_spec string "${thermo_spec} v_comTarget v_cDev c_COM[3]"
+variable thermo_spec string "${thermo_spec} v_comTarget c_COM[3] v_cDev"
 
 label comBreak
 
