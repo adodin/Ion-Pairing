@@ -37,7 +37,7 @@ create_box ${atomTypes} box bond/types ${bondTypes} angle/types ${angleTypes} &
 if "${BC} == box" then &
     "region water_box block EDGE EDGE EDGE EDGE EDGE EDGE units lattice" &
 else &
-    "region water_box block EDGE EDGE EDGE EDGE -$L $L units lattice"
+    "region water_box block EDGE EDGE EDGE EDGE -${Lz} ${Lz} units lattice"
 create_atoms 0 region water_box mol h2o $S
 
 # Create Cations

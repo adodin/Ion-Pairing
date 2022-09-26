@@ -56,7 +56,6 @@ neigh_modify delay 0
 group waters type 1:${numWaterTypes}
 group cations type $((v_numWaterTypes+1)):$((v_numWaterTypes+v_numCationTypes))
 group anions type $((v_numWaterTypes+v_numCationTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes))
-group mobile type 1:$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes))
 if "${BC} == electrode" then &
     "group electrodes type $((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+v_numBCTypes))" &
     "region rbot block EDGE EDGE EDGE EDGE EDGE 0" &
@@ -64,7 +63,10 @@ if "${BC} == electrode" then &
     "group allbot region rbot" &
     "group alltop region rtop" &
     "group bot intersect electrodes allbot" &
-    "group top intersect electrodes alltop" 
+    "group top intersect electrodes alltop" &
+else &
+    "group electrodes empty"
+group mobile subtract all electrodes
 
 
 if "${cationMolecular}==True && ${anionMolecular}==True" then &
@@ -329,7 +331,7 @@ if "${skipEquil}==True" then &
     "jump SELF production"
 
 
-fix stabilize all nve/limit 0.1
+fix stabilize mobile nve/limit 0.1
 run ${nStabilize}
 unfix stabilize
 
