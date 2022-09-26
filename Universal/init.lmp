@@ -92,5 +92,12 @@ minimize 0 0 1000 10000
 # =============================================================================
 # Save Data Output
 # =============================================================================
+if "${cationMolecular}==True && ${anionMolecular}==False" then &
+    "set type ${anionType} charge ${qAnion}" &
+elif "${cationMolecular}==False && ${anionMolecular}==True" &
+    "set type ${cationType} charge ${qCation}" &
+else &
+    "set type ${anionType} charge -${qAnion}" &
+    "set type ${cationType} charge ${qCation}" 
 
 write_data ${DATADIR}data.${label}.init
