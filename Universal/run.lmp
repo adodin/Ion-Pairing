@@ -68,7 +68,7 @@ else &
     "group electrodes empty"
 group mobile subtract all electrodes
 
-if "S{pol} == Drude" then &
+if "${pol} == Drude" then &
     "jump SELF skipCharges"
 
 if "${cationMolecular}==True && ${anionMolecular}==True" then &
