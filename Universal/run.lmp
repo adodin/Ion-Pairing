@@ -68,6 +68,8 @@ else &
     "group electrodes empty"
 group mobile subtract all electrodes
 
+reset_mol_ids mobile single yes
+
 if "${pol} == Drude" then &
     "jump SELF skipCharges"
 
