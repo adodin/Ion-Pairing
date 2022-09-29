@@ -99,11 +99,9 @@ for (( i=0; i<=${#biasTypes[@]}-1; i++ )); do
   fi
   echo "rBiasFlag: $rBiasFlag"
   if [[ ${biasTypes[i]} = "r" ]] && [[ "${rBiasFlag}" = false ]]; then
-    echo "1st r Bias Found"
     biasString+=" -v ${biasTypes[i]}Bias $bID $b0 ${biasKs[i]}"
     rBiasFlag=true
   elif [[ ${biasTypes[i]} = "r" ]] && [[ "${rBiasFlag}" = true ]]; then
-    echo "Appending to r Biases"
     biasString+=" $bID $b0 ${biasKs[i]}"
   elif [[ ${biasTypes[i]} = "z" ]] && [[ ${zBiasFlag} = false ]]; then
     biasString+=" -v ${biasTypes[i]}Bias $bID $b0 ${biasKs[i]}"
