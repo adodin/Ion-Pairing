@@ -71,24 +71,27 @@ group mobile subtract all electrodes
 if "${pol} == Drude" then &
     "jump SELF skipCharges"
 
+if "${cationMolecular}==False" then &
+    "set type ${cationType} charge ${qCation}"
+
+if "${anionMolecular}==False" then &
+    "set type ${anionType} charge ${qAnion}"
+
+
+label skipCharges
+
 if "${cationMolecular}==True && ${anionMolecular}==True" then &
     "group molecular union waters cations anions" &
     "group simple empty" &
 elif "${cationMolecular}==True && ${anionMolecular}==False" &
     "group molecular union waters cations" &
     "group simple union anions" &
-    "set type ${anionType} charge ${qAnion}" &
 elif "${cationMolecular}==False && ${anionMolecular}==True" &
     "group molecular union waters anions" &
     "group simple union cations" &
-    "set type ${cationType} charge ${qCation}" &
 else &
     "group molecular union waters" &
-    "group simple union cations anions" &
-    "set type ${anionType} charge -${qAnion}" &
-    "set type ${cationType} charge ${qCation}" 
-
-label skipCharges
+    "group simple union cations anions" 
 
 if "${pol} == Drude" then &
     "group ATOMS type 1:${atomTypes}" &
