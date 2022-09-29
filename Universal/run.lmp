@@ -359,7 +359,7 @@ if "${pol} == Drude" then &
 fix rigidNVT molecular rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
 if "${pol} == Drude" then &
-    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
+    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDEquil}" &
     "fix DrudeInverse all drude/transform/inverse"
 
 run ${nHeat}
