@@ -274,7 +274,7 @@ variable rStDev${rBiasCounter} equal sqrt(v_kT/${k})
 
 print "rBias:"
 print "ID1: ${rBiasID1}"
-print "ID2: ${rBiasID1}"
+print "ID2: ${rBiasID2}"
 print "r0: ${r0}"
 print "k: $k"
 

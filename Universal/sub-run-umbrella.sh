@@ -81,6 +81,9 @@ while :; do
   esac
 done
 
+rBiasFlag=false
+zBiasFlag=false
+
 echo "==================================================="
 biasString=""
 echo "TASK: $SGE_TASK_ID"
@@ -89,13 +92,25 @@ for (( i=0; i<=${#biasTypes[@]}-1; i++ )); do
   ind=$(((($SGE_TASK_ID-1)/$fDiv)%${biasNs[i]}))
   b0=$(bc <<< "${biasMins[i]}+${biasDs[i]}*$ind")
   if [[ (( $(echo "$b0 < 0" |bc -l) == 1 )) && ${biasTypes[i]} == z ]]; then
-    echo "Applying Minus"
     bID=$(sed -E "s/^(.) /\1m / " <<< ${biasIDs[i]})
     b0=${b0//-}
   else
     bID=${biasIDs[i]}
   fi
-  biasString+=" -v ${biasTypes[i]}Bias $bID $b0 ${biasKs[i]}"
+  echo "rBiasFlag: $rBiasFlag"
+  if [[ ${biasTypes[i]} = "r" ]] && [[ "${rBiasFlag}" = false ]]; then
+    echo "1st r Bias Found"
+    biasString+=" -v ${biasTypes[i]}Bias $bID $b0 ${biasKs[i]}"
+    rBiasFlag=true
+  elif [[ ${biasTypes[i]} = "r" ]] && [[ "${rBiasFlag}" = true ]]; then
+    echo "Appending to r Biases"
+    biasString+=" $bID $b0 ${biasKs[i]}"
+  elif [[ ${biasTypes[i]} = "z" ]] && [[ ${zBiasFlag} = false ]]; then
+    biasString+=" -v ${biasTypes[i]}Bias $bID $b0 ${biasKs[i]}"
+    zBiasFlag=true
+  elif [[ ${biasTypes[i]} = "z" ]] && [[ ${zBiasFlag} = true ]]; then
+    biasString+=" $bID $b0 ${biasKs[i]}"
+  fi
   echo "---------------------------------------------------"
   echo "${biasTypes[i]} Bias:"
   echo "  Biasing: ${biasIDs[i]}"
