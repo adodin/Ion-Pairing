@@ -11,6 +11,7 @@ bond_style harmonic
 angle_style harmonic
 improper_style harmonic
 
+include parse_biases_label.lmp
 read_data ${DATADIR}data.${label}.prod
 include ${FFDIR}ff.${FFLabel}.lmp
 
