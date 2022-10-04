@@ -1,0 +1,25 @@
+units real
+
+include parameters.lmp
+include parse_model.lmp
+
+# Read in Force Field
+atom_style full
+pair_style lj/cut/coul/long 12.0
+kspace_style pppm 1e-3
+bond_style harmonic 
+angle_style harmonic
+improper_style harmonic
+
+read_data ${DATADIR}data.${label}.prod
+include ${FFDIR}ff.${FFLabel}.lmp
+
+# Turn off Non-Coulomb interactions
+pair_coeff * * 0 0
+delete_bonds all multi
+
+# Define Potential Compute
+compute pot all pe/atom
+dump 1 all custom ${atomEvery} ${DATADIR}sfg.${label}.lammpstrj id mol type q x y z c_pot fx fy fz
+thermo 1
+rerun ${DATADIR}prod.${label}.lammpstrj dump x y z ix iy iz q
