@@ -22,4 +22,4 @@ delete_bonds all multi
 compute pot all pe/atom
 dump 1 all custom ${atomEvery} ${DATADIR}sfg.${label}.lammpstrj id mol type q x y z c_pot fx fy fz
 thermo 1
-rerun ${DATADIR}prod.${label}.lammpstrj dump x y z ix iy iz q
+rerun ${DATADIR}prod.${label}.lammpstrj first 0 last ${nProd} every ${atomEvery} dump x y z ix iy iz q 
