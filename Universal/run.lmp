@@ -24,7 +24,11 @@ improper_style harmonic
 
 if "${pol} == Drude" then &
     "variable label string ${pol}.${label}" &
-    "variable FFLabel string ${pol}.${FFLabel}"
+    "variable FFLabel string ${pol}.${FFLabel}" 
+
+if "${sym}==asym" then &
+    "variable  label string asym.${label}" &
+    "variable FFLabel string asym.${FFLabel}" 
 
 if "${skipEquil}==False" then &
     "read_data ${DATADIR}data.${label}.init" &
