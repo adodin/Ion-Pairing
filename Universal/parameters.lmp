@@ -74,6 +74,7 @@ variable minEvery index 1
 # Integrator Parameters
 # ==========================================================================
 variable dt index 2.0
+variable dtEquil index ${dt}
 
 # ==========================================================================
 # Thermostat & Barostat Parameters

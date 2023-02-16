@@ -1,6 +1,7 @@
 variable water index swm4ndp
 variable pol index Drude
 variable dt index 1.0
+variable dtEquil index 0.1
 variable nStabilize index 100
 variable nHeat index 100000
 variable nEquil index 500000
