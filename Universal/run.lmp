@@ -208,22 +208,25 @@ write_data ${DATADIR}data.${label}.eq pair ij
 # Run Production
 # =============================================================================
 
-label production
-
-if "${skipProd}==True" then &
-    quit
-
-undump 1
-if "$((count(biased))) > 0" then &
-    "undump 2"
-reset_timestep 0
-
 if "${pol} == Drude" then &
     "unfix DrudeDirect" &
     "unfix DrudeNVT" &
     "unfix DrudeInverse"
 unfix rigidNVT
 unfix simpleNVT
+
+undump 1
+
+if "$((count(biased))) > 0" then &
+    "undump 2"
+
+label production
+
+if "${skipProd}==True" then &
+    quit
+
+reset_timestep 0
+
 
 log ${DATADIR}eq.${label}.log
 
