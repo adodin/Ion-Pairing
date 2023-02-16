@@ -116,7 +116,7 @@ if "${pol} == ECC" then &
 # Set Up Overall Integration Fixes
 # =============================================================================
 
-timestep ${dt}
+timestep ${dtEquil}
 
 if "${BC} == wall" then &
     "change_box all boundary p p f" &
@@ -187,6 +187,8 @@ if "${pol} == Drude" then &
 unfix rigidNVT
 unfix simpleNVT
 variable TTarget equal $T
+
+timestep ${dt}
 
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
