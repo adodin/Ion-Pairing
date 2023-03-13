@@ -24,7 +24,11 @@ improper_style harmonic
 
 if "${pol} == Drude" then &
     "variable label string ${pol}.${label}" &
-    "variable FFLabel string ${pol}.${FFLabel}"
+    "variable FFLabel string ${pol}.${FFLabel}" 
+
+if "${sym}==asym" then &
+    "variable  label string asym.${label}" &
+    "variable FFLabel string asym.${FFLabel}" 
 
 if "${skipEquil}==False" then &
     "read_data ${DATADIR}data.${label}.init" &
@@ -112,7 +116,7 @@ if "${pol} == ECC" then &
 # Set Up Overall Integration Fixes
 # =============================================================================
 
-timestep ${dt}
+timestep ${dtEquil}
 
 if "${BC} == wall" then &
     "change_box all boundary p p f" &
@@ -184,6 +188,8 @@ unfix rigidNVT
 unfix simpleNVT
 variable TTarget equal $T
 
+timestep ${dt}
+
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
 fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtTEquil} tparam 10 10 3
@@ -202,22 +208,25 @@ write_data ${DATADIR}data.${label}.eq pair ij
 # Run Production
 # =============================================================================
 
-label production
-
-if "${skipProd}==True" then &
-    quit
-
-undump 1
-if "$((count(biased))) > 0" then &
-    "undump 2"
-reset_timestep 0
-
 if "${pol} == Drude" then &
     "unfix DrudeDirect" &
     "unfix DrudeNVT" &
     "unfix DrudeInverse"
 unfix rigidNVT
 unfix simpleNVT
+
+label production
+
+undump 1
+
+if "$((count(biased))) > 0" then &
+    "undump 2"
+
+if "${skipProd}==True" then &
+    quit
+
+reset_timestep 0
+
 
 log ${DATADIR}eq.${label}.log
 
