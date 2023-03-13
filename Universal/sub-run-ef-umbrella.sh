@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -pe mpi 8
 #$ -j y
-#$ -N IPU-run
+#$ -N EFU-run
 #$ -V
 #$ -q regular
 #$ -hold_jid IP-min
