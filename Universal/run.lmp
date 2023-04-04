@@ -137,6 +137,12 @@ include parse_biases.lmp
 
 variable TTarget equal ramp(1,$T)
 
+group OH type 1 2
+compute oh_bonds OH bond/local dist
+compute oh_max OH reduce max c_oh_bonds
+
+variable thermo_spec string "${thermo_spec} c_oh_max"
+
 thermo_style custom ${thermo_spec}
 compute myTemp mobile temp
 thermo_modify temp myTemp
@@ -152,6 +158,13 @@ if "${skipEquil}==True" then &
 
 
 fix stabilize mobile nve/limit 0.1
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
+print "Running Stabilization"
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
 run ${nStabilize}
 unfix stabilize
 
@@ -172,6 +185,14 @@ fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
 if "${pol} == Drude" then &
     "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDEquil}" &
     "fix DrudeInverse all drude/transform/inverse"
+
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
+print "Running Heating"
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
 
 run ${nHeat}
 
@@ -199,6 +220,14 @@ if "${pol} == Drude" then &
     "fix DrudeInverse all drude/transform/inverse"
 
 compute cz all chunk/atom bin/1d z center 0.5
+
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
+print "Running Equilibration"
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
 
 run ${nEquil}
 
@@ -247,6 +276,14 @@ if "${pol} == Drude" then &
 dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
 if "$((count(biased))) > 0" then &
     "dump 2 biased custom ${cvEvery} ${DATADIR}bias.prod.${label}.lammpstrj id mol type x y z"
+
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
+print "Running Production"
+print "==============================================================="
+print "==============================================================="
+print "==============================================================="
 
 run ${nProd}
 
