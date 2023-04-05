@@ -116,7 +116,7 @@ if "${pol} == ECC" then &
 # Set Up Overall Integration Fixes
 # =============================================================================
 
-timestep ${dtEquil}
+timestep ${dtStabilize}
 
 if "${BC} == wall" then &
     "change_box all boundary p p f" &
@@ -127,7 +127,7 @@ elif "${BC} == electrode" &
     "kspace_modify slab 3.0" &
     "fix conp bot electrode/conp -$((v_pot/2)) ${eta} couple top $((v_pot/2)) symm on"
 
-variable thermo_spec string "step v_TTarget temp pe density ke"
+variable thermo_spec string "step v_TTarget temp pe density ke fmax"
 
 include parse_biases.lmp
 
@@ -135,7 +135,7 @@ include parse_biases.lmp
 # Set Up Outputs
 # =============================================================================
 
-variable TTarget equal ramp(1,$T)
+variable TTarget equal 1
 
 group OH type 1 2
 compute oh_bonds OH bond/local dist
@@ -156,8 +156,11 @@ if "$((count(biased))) > 0" then &
 if "${skipEquil}==True" then &
     "jump SELF production"
 
-
-fix stabilize mobile nve/limit 0.1
+if "${pol} == Drude" then &
+    "delete_bonds ATOMS multi" &
+else &
+    "delete_bonds all multi "
+   
 print "==============================================================="
 print "==============================================================="
 print "==============================================================="
@@ -165,14 +168,31 @@ print "Running Stabilization"
 print "==============================================================="
 print "==============================================================="
 print "==============================================================="
-run ${nStabilize}
-unfix stabilize
+
+if "${pol} == Drude" then &
+    "fix DrudeDirect all drude/transform/direct"
+fix rigidNVT molecular rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
+fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
+if "${pol} == Drude" then &
+    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
+    "fix DrudeInverse all drude/transform/inverse"
+
+variable f equal fmax
+
+fix halter all halt ${nStabilizeBatch} v_f < ${FMaxPartStabilized} error continue
+run ${nStabilizeMax} pre no post no 
+
+unfix halter
+
+fix halter all halt ${nStabilizeBatch} v_f < ${FMaxStabilized} error continue
+timestep ${dtStabilize2}
+run ${nStabilizeMax} upto pre yes post no 
+
+unfix halter
 
 velocity all set 0 0 0
-if "${pol} == Drude" then &
-    "delete_bonds ATOMS multi" &
-else &
-    "delete_bonds all multi "
+
+variable TTarget equal ramp(1,$T)
 
 # =============================================================================
 # Run Heating
@@ -194,7 +214,8 @@ print "==============================================================="
 print "==============================================================="
 print "==============================================================="
 
-run ${nHeat}
+timestep ${dtEquil}
+run ${nHeat} pre yes post no
 
 
 # =============================================================================
@@ -229,7 +250,7 @@ print "==============================================================="
 print "==============================================================="
 print "==============================================================="
 
-run ${nEquil}
+run ${nEquil} pre no post yes
 
 write_data ${DATADIR}data.${label}.eq pair ij
 
@@ -285,6 +306,6 @@ print "==============================================================="
 print "==============================================================="
 print "==============================================================="
 
-run ${nProd}
+run ${nProd} pre no post yes
 
 write_data ${DATADIR}data.${label}.prod pair ij

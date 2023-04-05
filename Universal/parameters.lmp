@@ -75,7 +75,11 @@ variable minEvery index 1
 # ==========================================================================
 variable dt index 2.0
 variable dtEquil index ${dt}
+variable dtStabilize index 0.01
+variable dtStabilize2 index 0.1
 
+variable FMaxStabilized index 100.0
+variable FMaxPartStabilized index 200.0
 # ==========================================================================
 # Thermostat & Barostat Parameters
 # ==========================================================================
@@ -83,21 +87,26 @@ variable dtEquil index ${dt}
 # Thermostat
 variable T index 300
 variable kT  equal 0.00199*${T}
-variable gTEquil index 10
-variable gtTEquil equal v_gT*v_dt
+variable gTStabilize index 100
+variable gtTStabilize equal v_gTStabilize*v_dt
+variable gTEquil index 100
+variable gtTEquil equal v_gTEquil*v_dt
 variable gT index 100
 variable gtT equal v_gT*v_dt
 
 variable TD index 300
+variable gTDStabilize index 1
+variable gtTDStabilize equal v_gTDStabilize*v_dt
 variable gTDEquil index 10
-variable gtTDEquil equal v_gTD*v_dt
+variable gtTDEquil equal v_gTDEquil*v_dt
 variable gTD index 100
 variable gtTD equal v_gTD*v_dt
 # ==========================================================================
 # Equilibration Parameters
 # ==========================================================================
 
-variable nStabilize index 0
+variable nStabilizeMax index 0
+variable nStabilizeBatch index 1000
 variable nHeat index 50000
 variable nEquil index 250000
 variable nProd index 1000000
