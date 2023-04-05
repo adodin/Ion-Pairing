@@ -79,7 +79,7 @@ variable dtStabilize index 0.01
 variable dtStabilize2 index 0.1
 
 variable FMaxStabilized index 100.0
-variable FMaxPartStabilized index 200.0
+variable FMaxPartStabilized index 1000.0
 # ==========================================================================
 # Thermostat & Barostat Parameters
 # ==========================================================================
@@ -106,7 +106,7 @@ variable gtTD equal v_gTD*v_dt
 # ==========================================================================
 
 variable nStabilizeMax index 0
-variable nStabilizeBatch index 1000
+variable nStabilizeBatch index 100
 variable nHeat index 50000
 variable nEquil index 250000
 variable nProd index 1000000

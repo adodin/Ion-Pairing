@@ -148,10 +148,10 @@ compute myTemp mobile temp
 thermo_modify temp myTemp
 thermo ${thermoEvery}
 
-dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
+dump 1 all custom ${atomEvery} ${DATADIR}stab.${label}.lammpstrj id mol type q x y z vx vy vz fx fy fz ix iy iz
 #dump 1 all custom 1 ${DATADIR}eq.${label}.lammpstrj id mol type q x y z vx vy vz fx fy fz ix iy iz
 if "$((count(biased))) > 0" then &
-    "dump 2 biased custom ${cvEvery} ${DATADIR}bias.eq.${label}.lammpstrj id mol type x y z"
+    "dump 2 biased custom ${cvEvery} ${DATADIR}bias.stab.${label}.lammpstrj id mol type x y z"
 
 if "${skipEquil}==True" then &
     "jump SELF production"
@@ -183,14 +183,40 @@ fix halter all halt ${nStabilizeBatch} v_f < ${FMaxPartStabilized} error continu
 run ${nStabilizeMax} pre no post no 
 
 unfix halter
+if "${pol} == Drude" then &
+    "unfix DrudeDirect" &
+    "unfix DrudeNVT" &
+    "unfix DrudeInverse"
+unfix rigidNVT
+unfix simpleNVT
+
+timestep ${dtStabilize2}
+
+velocity all zero linear
+velocity all zero angular
+
+if "${pol} == Drude" then &
+    "fix DrudeDirect all drude/transform/direct"
+fix rigidNVT molecular rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
+fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
+if "${pol} == Drude" then &
+    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
+    "fix DrudeInverse all drude/transform/inverse"
 
 fix halter all halt ${nStabilizeBatch} v_f < ${FMaxStabilized} error continue
-timestep ${dtStabilize2}
+
 run ${nStabilizeMax} upto pre yes post no 
 
 unfix halter
+if "${pol} == Drude" then &
+    "unfix DrudeDirect" &
+    "unfix DrudeNVT" &
+    "unfix DrudeInverse"
+unfix rigidNVT
+unfix simpleNVT
 
-velocity all set 0 0 0
+velocity all zero linear
+velocity all zero angular
 
 variable TTarget equal ramp(1,$T)
 
@@ -214,8 +240,15 @@ print "==============================================================="
 print "==============================================================="
 print "==============================================================="
 
+undump 1
+dump 1 all custom ${atomEvery} ${DATADIR}eq.${label}.lammpstrj id mol type q x y z vx vy vz fx fy fz ix iy iz
+if "$((count(biased))) > 0" then &
+    "undump 2" &
+    "dump 2 biased custom ${cvEvery} ${DATADIR}bias.eq.${label}.lammpstrj id mol type x y z"
+
 timestep ${dtEquil}
-run ${nHeat} pre yes post no
+reset_timestep 0
+run ${nHeat} 
 
 
 # =============================================================================
@@ -250,7 +283,7 @@ print "==============================================================="
 print "==============================================================="
 print "==============================================================="
 
-run ${nEquil} pre no post yes
+run ${nEquil} 
 
 write_data ${DATADIR}data.${label}.eq pair ij
 
@@ -306,6 +339,6 @@ print "==============================================================="
 print "==============================================================="
 print "==============================================================="
 
-run ${nProd} pre no post yes
+run ${nProd}
 
 write_data ${DATADIR}data.${label}.prod pair ij
