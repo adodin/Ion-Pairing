@@ -193,7 +193,8 @@ variable f equal fmax
 
 fix halter all halt ${nStabilizeBatch} v_f < ${FMaxStabilized} error continue
 next FMaxStabilized
-run ${nStabilizeMax} upto pre yes post no 
+run ${nStabilizeMax} pre yes post no 
+next nStabilizeMax
 
 unfix halter
 if "${pol} == Drude" then &
