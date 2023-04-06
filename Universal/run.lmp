@@ -116,7 +116,6 @@ if "${pol} == ECC" then &
 # Set Up Overall Integration Fixes
 # =============================================================================
 
-timestep ${dtStabilize}
 
 if "${BC} == wall" then &
     "change_box all boundary p p f" &
@@ -169,6 +168,19 @@ print "==============================================================="
 print "==============================================================="
 print "==============================================================="
 
+
+label StabilizeLoop
+
+print  "Starting Loop Iteration"
+print  "Timestep: ${dtStabilize}"
+print  "Threshold: ${FMaxStabilized}"
+
+
+timestep ${dtStabilize}
+next dtStabilize
+velocity all zero linear
+velocity all zero angular
+
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
 fix rigidNVT molecular rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
@@ -179,32 +191,8 @@ if "${pol} == Drude" then &
 
 variable f equal fmax
 
-fix halter all halt ${nStabilizeBatch} v_f < ${FMaxPartStabilized} error continue
-run ${nStabilizeMax} pre no post no 
-
-unfix halter
-if "${pol} == Drude" then &
-    "unfix DrudeDirect" &
-    "unfix DrudeNVT" &
-    "unfix DrudeInverse"
-unfix rigidNVT
-unfix simpleNVT
-
-timestep ${dtStabilize2}
-
-velocity all zero linear
-velocity all zero angular
-
-if "${pol} == Drude" then &
-    "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT molecular rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
-fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
-if "${pol} == Drude" then &
-    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
-    "fix DrudeInverse all drude/transform/inverse"
-
 fix halter all halt ${nStabilizeBatch} v_f < ${FMaxStabilized} error continue
-
+next FMaxStabilized
 run ${nStabilizeMax} upto pre yes post no 
 
 unfix halter
@@ -215,8 +203,7 @@ if "${pol} == Drude" then &
 unfix rigidNVT
 unfix simpleNVT
 
-velocity all zero linear
-velocity all zero angular
+jump SELF StabilizeLoop
 
 variable TTarget equal ramp(1,$T)
 

@@ -75,11 +75,10 @@ variable minEvery index 1
 # ==========================================================================
 variable dt index 2.0
 variable dtEquil index ${dt}
-variable dtStabilize index 0.01
-variable dtStabilize2 index 0.1
+variable dtStabilize index 0.01 0.1
 
-variable FMaxStabilized index 100.0
-variable FMaxPartStabilized index 1000.0
+variable FMaxStabilized index 1000.0 100.0
+
 # ==========================================================================
 # Thermostat & Barostat Parameters
 # ==========================================================================

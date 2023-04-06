@@ -3,7 +3,8 @@ variable pol index Drude
 variable dt index 1.0
 variable dtEquil index 1.0
 variable nStabilizeMax index 100000
-variable dtStabilize index 0.01
+variable dtStabilize index 0.0001 0.01 0.1
+variable FMaxStabilized index 10000000.0 1000.0 100.0
 variable nHeat index 100000
 variable nEquil index 500000
 variable nProd index 2000000
