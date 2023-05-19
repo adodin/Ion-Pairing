@@ -75,6 +75,18 @@ This runs equilibration and production molecular dynamics simulations with const
 
 ## Running Simulations
 
+The MD simulations proceed through 4 different stages:
+
+1. **init:** Initialize a grid of water with ions and relax any overlaps by minimizing with a soft force field.
+2. **stab:** By default, this step only runs for Drude simulations. Stabilize simulation by running a few steps with full force field and a very short timestep, resetting velocities to 0 periodically. This has been more robust than other methods for starting Drude simulations. Can be turned on by setting the variable ```nStabilizeMax``` to any integer other than ```0```.
+3. **eq:** Slowly heat and then equilibrate the simulation. This is intended to be discarded and not analyzed.
+4. **prod:** Production MD simulation. This is the main content of the simulation that will be analyzed.
+
+Step 1 is contained in ```init.lmp``` while the remaining steps 2-4 are in ```run.lmp```. If desired, certain steps can be skipped by setting the ```skipProd``` and ```skipEquil``` variables to ```True``` or by setting the ```nHeat```, ```nEquil```, and ```nProd``` and ```nStabilizeMax``` variables that control the number of steps in each stage to ```0```.
+
+**Brief Note on Biased Simulation:** Umbrella sampling biases (if being used) are applied starting in the stabilization step all the way through the production. As a result, each bias window will generally start production in a different initial condition that has already equilibrated to the bias. Note that slab simulations with a liquid vapor interfaces include a center of mass constraint on all particles that are not otherwised biased by default. This standard constraint stops the water slab center of mass from flying around the simulation and does not affect any other applied biases.
+
+
 ### Drude Oscillator Set-Up
 
 ### Umbrella Sampling Biases
