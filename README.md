@@ -268,9 +268,41 @@ Step 1 is contained in ```init.lmp``` while the remaining steps 2-4 are in ```ru
 
 ### Example Pipelines
 
+To show how these simulations can be strung together consider simulating Na Cl with a confining Wall biazing the Chloride to be at the center of the simulation.
+To initialize then run the simulation we would run the following commands in the ```LAMMPS``` directory.
 
+    lmp -in init.lmp -v cation Na -v anion Cl -v BC slab -v DATADIR <DataDir>
+    lmp -in run.lmp -v cation Na -v anion Cl -v BC slab -v zBias a 1 0.0 10.0 -v DATADIR <DataDir>
+
+Note that we omitted the zBias commands in the init script since they are not necessary.
+It would have been fine to include them, they would have just been ignored in the init script.
+The relative path ```<DataDir>``` points to the directory where the simulation output will be stored.
 
 ### Drude Oscillator Set-Up
+
+The initialization set up for Drude Oscillator simulations is a bit more involved since we first have to set up a tip4p like box of water, then add the Drude particles to the polarizable species and attach them with new bonds.
+The ```polarizer.py``` script in ```SCRIPTS``` is provided by the authors of the LAMMPS DRUDE package to facilitate this process.
+Before we can use it however, we need to add labels to the masses section of the init data file and remove the pair potential specifications.
+To do this, we have provied the ```prep-pol-data.sh``` script which does this labeling for you.
+
+The ```prep-pol-data.sh``` script requires a sequence of flags that lists the atom types in the order they appear. 
+Polarizable atomic species are flagged just with their atom labels (e.g. ```-Na``` or ```-Cl```) which must appear in the ```FF/drude.dff``` Drude parameter file.
+Molecular species must be explicitly listed in the script.
+Currently only ```-swm4ndp``` and ```-CO3``` are implemented.
+
+Put together this gives the following pipeline for running a Drude simulation from inside the ```LAMMPS``` directory
+
+    lmp -in init.lmp -v cation Na -v anion CO3 -v BC slab -v paramfile drude_paramfile -v DATADIR <DataDir>
+    
+    cd <DataDir>
+    
+    mv data.slab.swm4ndp.Na.CO3.prepol
+    <path/to/SCRIPTS>/prep-pol-data.sh -swm4ndp -Na -CO3 data.slab.swm4ndp.Na.CO3.prepol data.slab.swm4ndp.Na.CO3.prep
+    <path/to/SCRIPTS>/polarizer.py -q -f <path/to/FF>/drude.dff data.slab.swm4ndp.Na.CO3.prep data.slab.swm4ndp.Na.CO3.init
+    
+    cd <path/to/LAMMPS>
+    
+    lmp -in run.lmp -v cation Na -v anion CO3 -v BC slab -v paramfile drude_paramfile -v DATADIR <DataDir> -v zBias a 1 0 10.0 -v rBias a 1 c 1 3.5 10.0 a 1 c 2 5.5 10.0
 
 ## Submit Scripts
 

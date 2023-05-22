@@ -4,7 +4,7 @@ counter=1
 sub_string=" "
 while :; do
    case $1 in
-      -swm4-ndp)
+      -swm4ndp)
          sub_string=${sub_string}" s/^$counter .*/& \# ODw/ \n "
          counter=$(( counter + 1 ))
          sub_string=${sub_string}" s/^$counter .*/& \# H/ \n "
