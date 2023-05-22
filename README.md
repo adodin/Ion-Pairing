@@ -116,6 +116,94 @@ The following list of these parameters is provided for quick reference:
     - ```FFDIR```: Directory where relevant force fields are stored. Defaults to the ```FF``` directory if you  are running in the ```LAMMPS``` directory.
     - ```SEED```: The random seed used for the simulation. This is used to seed a random number generator that is in turn used to generate random seeds when required. Simulations run on the same hardware with the same ```SEED``` will produce identical output. Make sure to change this if this is not desired. Commonly, the JOBID or TASKID will be used when submitting jobs to a computational cluster or the  $RANDOM bash variable can be used to generate one on the fly.
 
+## Applying Biases
+
+A crucial feature of this code is the ability to apply a harmonic bias to atomic coordinates in order to facilitate umbrella sampling. 
+These are currently implemented using the LAMMPS built in ```fix spring``` since this command provides sufficient flexibility for our purposes and is faster and more portable than the PLUMED pacakge.
+The code for implementing the biases is stored separately in ```LAMMPS/parse_biases.lmp```. 
+In addition, it is sometimes useful for post processing to construct the groups of atoms that a bias would be applied to without explicitly applying the bias.
+The code for doing so is contained in ```LAMMPS/parse_biases_label.lmp```.
+
+Three types of bias potentials are currently implemented, and are accessed with the following variables:
+
+- ```zBias```: Biases the specified atom or molecule towards a set z value.
+- ```rBias```: Biases the distance between two specified atoms or molecules.
+- ```comBias```: Biases the Center of Mass of all otherwise unbiased atoms. This is turned on by default for slab simulaitons.
+
+Atoms that are subjected to a zBias or rBias are excluded from comBias to avoid conflicting biases which could, for example, make the comBias dependent on the zBias.
+
+As many zBiases and rBiases as desired can be applied but only one comBias can be applied. To accomodate this with LAMMPS command-line variables, this is implemented using multiple entries in a LAMMPS index array.
+
+### Atom Specifier
+
+The first step in setting up a bias potential is specifying which atoms or molecules the bias should apply to. 
+This is done using an atom specification string.
+If an atom in a molecule is specified, the bias is applied to the entire molecule.
+
+Three options are provided for specifying the atom:
+
+1. index (```id(m)```): Specify the atom by its LAMMPS index.
+2. cation (```c(m)```): Bias the $n^{th}$ cation.
+2. anion (```a(m)```): Bias the $n^{th}$ anion.
+
+An m must be added if we wish to specify a negative value for the target z value. 
+This is clunky but is necessary since we can't use a ```-``` in a command line argument.
+See the second example immediately below.
+
+Some example atom specification strings are listed below
+
+    #Format: <id/c/a> <number>
+    c 1
+    am 3
+    id 275 c 2
+
+These specification strings make up part of the zBias and rBias variables.
+Each zBias requires you to specify one atom while the rBias requires two.
+
+### z Bias
+
+The zBias variable syntax is as follows:
+
+    -v zBias <AtomSpecifier1> <z1> <k1> <AtomSpecifier2> <z2> <k2> ...
+
+where ```<AtomSpecifieri>``` is an atom specifier described above, ```<zi>``` is the target z value (in $\AA$) and ```<ki>``` is the spring constant (in kCal/mol/$\AA^2$) of the $i^{th}$ harmonic bias.
+Both of these numbers can only be positive, so if a negative z value is desired then the atom specifier must be mopdified by adding ```m``` to the string as described above.
+In this way, multiple biases can be specified by a single zBias variable.
+Note that the variable zBias can only be specified once so all zBiases must be listed after a singlr ```-v zBias``` flag to the LAMMPS scripts.
+
+For example, to run equilibration and production of an Na Cl slab holding the first Na atom at z = 7 $\AA$ and the first Cl atom at z = -5 $\AA$ both with a spring constant of 10 kCal/mol/$\AA^2$ you would use
+
+    lmp -in run.lmp -v cation Na -v anion Cl -v BC slab -v zBias c 1 7 10 am 1 5 10
+
+### r Bias
+
+Specifying an rBias is very similar to a zBias but two Atom Specifiers must be provided and there is no need to apply the negative value atom specifier.
+The command syntax looks like 
+
+     -v rBias <FirstAtomSpecifier1> <SecondAtomSpecifier2> <r1> <k1> <FirstAtomSpecifier2> <SecondAtomSpecifier2> <r2> <k2> ...
+
+with all arguments as in the zBias case.
+
+These can be freely combined with zBiases as desired. Suppose we want to bias the first Na atom at z = 7 $\AA$ and hold the first Cl atom at a distance r = 3.5 $\AA$  from this sodium with respective spring constants of 10 and 20 kCal/mol/$\AA^2$ and we would like to do so in an electrode simulation with a 1 V applied potential difference.
+This would be accomplished by tge command
+
+    lmp -in run.lmp -v cation Na -v anion Cl -v BC electrode -v pot 1.0 -v zBias c 1 7 10 -v rBias c 1 a 1 3.5 20
+
+### CoM Bias
+
+The center of mass bias is a little simpler since it automatically applies to all atoms not included in a zBias or rBias and fixes the center of mass of those atoms to the origin. The only parameter is therefore the spring constant of the bias and takes the following form
+
+    -v comBias <kCoM>
+
+where ```<kCoM>``` is just the spring constant of the center of mass bias potential.
+
+There is no need to include this when running a slab simulation since this automatically added. 
+In other simulations it is usually unnecessary and so this variable is rarely used except for to change the spring constant of the CoM bias in a slab simulation.
+
+## Simulation Labels
+
+Each simulation is assigned a descriptive label that specifies at a glance the key details of the simulation. 
+This is done so that 
 
 ## Running Simulations
 
