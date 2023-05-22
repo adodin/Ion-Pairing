@@ -203,7 +203,53 @@ In other simulations it is usually unnecessary and so this variable is rarely us
 ## Simulation Labels
 
 Each simulation is assigned a descriptive label that specifies at a glance the key details of the simulation. 
-This is done so that 
+The label reflects the following simulation properties separated by a ```.```:
+
+- Polarizability Model (```Drude```/```ECC```/```BLANK```)
+- Boundary Condition (```box```/```slab```/```wall```/```electrode```)
+- Water Model (```spce```/```tip4p```/```swm4ndp```)
+- Cation Identity (```Na```)
+- Anion Identity (```Cl```/```Cl2```/```CO3```)
+- Applied Potential (```pot.<Potential>```) [Only for Electrode Simulations]
+- Bias Potentials (See Below)
+
+For example, for an unbiased simulation of NaCl in SPC/E water with no polarizability and an electrode boundary condition at 0.5 V applied difference the label would read
+
+    electrode.spce.Na.Cl.pot.0.5
+
+If instead we consider a Drude polarizable Na2CO3 simulation in swm4ndp water with a slab boundary condition the label would read
+
+    Drude.slab.swm4ndp.Na.CO3
+
+All Force Field files and outputs for simulations with these specifications will carry these labels making it easy to identify what conditions each simulation was run under and reducing overwriting of simulations run at different parameters.
+
+The force field label does not include the boundary condition part of the label except for the case of electrode simulations.
+
+### Labels for Biased Simulations
+
+The labeling for bias simulations is a little more involved since an arbitrary number of biases of different types can be included.
+Since the bias doesn't affect force field parametrization, the bias portion of the label is omitted.
+
+A center of mass bias is not included in the labeling.
+
+A string is added for each zBias that follows the following format:
+
+    z.<c/a/id><n1>.<z0>.k.<k>
+
+where ```<c/a/id>``` is the atom specifier type (note no "m" is appended, z0 will just be a negative number), ```<n>``` is the number passed to the atom specifier, ```<z0>``` is the target z value ($\AA$), and ```<k>``` is the spring constant (kCal/mol/$\AA^2$).
+
+A similar string is added for each rBias which only differs in that two atoms must be specified
+
+    r.<c/a/id><n1>.<c/a/id>.<n2>.<r0>.k.<k>
+
+with all parameters defined as above.
+
+These are concatenated in the order that they are specified with all non-CoM biases shown.
+
+For example, suppose we have the Drude Na2CO3 simulation with slab Boundary conditions as in the second label example but we now bias the CO3 anion to z = 17 $\AA$ and the two Sodiums at $r_1$ = 3 $\AA$ and  $r_2$ = 5.5 $\AA$ respectively, all with a spring constant of k=10 kCal/mol/$\AA^2$. 
+Such a simulation would have the label
+
+    Drude.slab.swm4ndp.Na.CO3.z.a1.17.k.10.r.a1.c1.3.0.k.10.r.a1.c2.5.5.k.10
 
 ## Running Simulations
 
@@ -225,8 +271,6 @@ Step 1 is contained in ```init.lmp``` while the remaining steps 2-4 are in ```ru
 
 
 ### Drude Oscillator Set-Up
-
-### Umbrella Sampling Biases
 
 ## Submit Scripts
 
