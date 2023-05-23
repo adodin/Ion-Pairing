@@ -306,4 +306,67 @@ Put together this gives the following pipeline for running a Drude simulation fr
 
 ## Submit Scripts
 
+In addition the ```.lmp``` LAMMPS inputs, the ```LAMMPS``` directory includes sample submit scripts to facilitate running these simulations on a HPC cluster or supercomputer.
+These particular scripts are intended to run using SGE on a cluster that already has mpi compatible LAMMPS installed and accessible under the name lmp.
+However, the scripts can be used as a starting template for other architectures or Queue Managment Systems like slurm or PBS.
+For now, we will focus on the non ```-umbrella``` scripts.
+These simpler submit scripts run only one job while the umbrella scripts submit a job array that scans over different biases.
+
+These scripts require 4 positional arguments ```<cation>```, ```<anion>```, ```<BC>```, and ```<replica>```.
+The first three are just the model parameters described above.
+The last is a replica label (e.g. just a number) that creates a labeled data directory for these simulations to keep them separated from other versions potentially running in parallel with similar parameters.
+After these 4 required arguments any number of additional flags can be passed in getting passed directly to LAMMPS.
+Suppose we want to run replica1 of a Na Cl slab simulation at 400 K, then we would simply run the following commands in the LAMMPS directory on a cluster with SGE installed
+
+    qsub sub-init.sh Na Cl slab 1 -v T 400
+    qsub sub-run.sh Na Cl slab 1 -v T 400
+
+We do not need to wait for the initialization script to conclude before submitting the main simulation script since ```sub-run.sh``` already includes a hold command that waits for the initialization to conclude before running.
+
+In addition to the total equilibration + production ```sub-run.sh``` script, ```sub-eq.sh``` and ```sub-prod.sh``` scripts are provided that separately run the equilibration and production stage.
+They are each set up with appropriate job hold commands that allow them to be submitted at the same time without waiting for jobs to conclude.
+Usually, you will just want to use the combined ```sub-run.sh``` command.
+
+**NB:** If you are interested in running Drude simulations, the preparation procedure described above will need to be run before submitting a ```sub-run.sh``` command to make sure the correct intermediate files are generated.
+
 ### Umbrella Sampling Job Arrays
+
+The ```-umbrella``` scripts are analogous to their non-umbrella counterparts except they submit an array of jobs that scans through a range or grid of biases.
+These scripts take the same 4 required arguments as above and can also be passed any number of arguments to the lammps script but must also contain a set of flags specifying the range of biases to be scanned before the arbitrary additional flags.
+You must also pass qsub the ```-t``` flag to request a range of jobs.
+
+The syntax for defining a scan over zBiases is as follows
+
+    -z <a/c/id> <n> <k> <z0_init> <Delta_z0> <num_z0>
+
+The first two arguments after the flag, ```<a/c/id> <n>``` are just the atom specifiers described above.
+Then, the spring constant is specified by ```<k>```.
+We must then specify the range of target values for the bias to be scanned over.
+The next argument, ```<z0_init>```, defines the first target value.
+The following, ```<Delta_z0>```, is the spacing of target values.
+The final argument, ```<num_z0>``` is the number of values to scan over.
+
+For example, the flag
+
+    -z a 1 10.0 2.5 0.5 3
+
+creates three simulations that bias the z value of the first anion with a spring constant of ```10.0``` and target ```z0```'s at ```2.5```, ```3.0``` and ```3.5```.
+
+Very similar flags can be used for r bias scans, requiring two atom specifiers with all other syntax exactly as before 
+
+    -r <a/c/id> <n1> <a/c/id> <n2> <k> <r0_init> <Delta_r0> <num_r0>
+
+Multiple flags can be provided, sepcifying a grid of biases.
+In this case, the scan will perform a nested loop over all combinations of target values.
+
+In addition to specifying the flags, it is also necessary to request a range of task-ids sufficient to perform the desired portion of the scan.
+The script creates a flattened array that iterates over the grid of all possible bias values.
+The number of items in this array is equal to the product of all ```<num_z0>``` arguments provided.
+This requires the addition of the ``` -t 1-<NBias>``` flag to the qsub command.
+
+Putting this all together we can consider scanning a 400 K Na Cl simulation with a wall, biasing the Cl anion every 1 $\AA$ from -20 to 20 (41 total values) and the Na-Cl distance every 0.5 $\AA$ from 3.5 to 9.0 (12 total values).
+This will require $41 \times 12 = 492$ tasks.
+This can be submitted as follows 
+
+    qsub sub-init.sh Na Cl wall 1 -v T 400
+    qsub -t 1-492 sub-run-umbrella.sh Na Cl slab 1 -z a 1 10.0 -20 1 41 -r a 1 c 1 20.0 3.5 0.5 12 -v T 400
