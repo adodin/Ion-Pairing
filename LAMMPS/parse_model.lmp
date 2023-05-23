@@ -24,13 +24,7 @@ if "(${water} == tip4p)" then &
     "variable numWaterBondTypes equal 2" &
     "variable numWaterAngleTypes equal 2" &
     "variable numWaterImproperTypes equal 1" &
-elif "(${water} == swm4ndp)" &
-    "variable atomsPerWater equal 4" &
-    "variable numWaterTypes equal 3" &
-    "variable numWaterBondTypes equal 2" &
-    "variable numWaterAngleTypes equal 2" &
-    "variable numWaterImproperTypes equal 1" &
-elif "(${water} == swm4-ndp)"  &
+elif "(${water} == swm4ndp)"  &
     "variable atomsPerWater equal 4" &
     "variable numWaterTypes equal 3" &
     "variable numWaterBondTypes equal 2" &

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-file=`ls Na2Cl-rUS.o150*|sort -R|tail -1`
-head -2 $file
-tail $file
