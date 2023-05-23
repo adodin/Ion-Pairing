@@ -296,9 +296,8 @@ Put together this gives the following pipeline for running a Drude simulation fr
     
     cd <DataDir>
     
-    mv data.slab.swm4ndp.Na.CO3.prepol
-    <path/to/SCRIPTS>/prep-pol-data.sh -swm4ndp -Na -CO3 data.slab.swm4ndp.Na.CO3.prepol data.slab.swm4ndp.Na.CO3.prep
-    <path/to/SCRIPTS>/polarizer.py -q -f <path/to/FF>/drude.dff data.slab.swm4ndp.Na.CO3.prep data.slab.swm4ndp.Na.CO3.init
+    <path/to/SCRIPTS>/prep-pol-data.sh -swm4ndp -Na -CO3 data.slab.swm4ndp.Na.CO3.init data.slab.swm4ndp.Na.CO3.prep
+    <path/to/SCRIPTS>/polarizer.py -q -f <path/to/FF>/drude.dff data.slab.swm4ndp.Na.CO3.prep data.Drude.slab.swm4ndp.Na.CO3.init
     
     cd <path/to/LAMMPS>
     
