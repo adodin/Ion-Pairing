@@ -25,6 +25,7 @@ include ${FFDIR}ff.${FFLabel}.lmp
 # Turn off Non-Coulomb interactions
 if "${pol} == Drude" then &
     "pair_coeff  *  * lj/cut/coul/long  0.0  3.0 " &
+    "pair_coeff  *  * thole 0.0" &
 else &
     "pair_coeff * * 0.0 3.0"
 
