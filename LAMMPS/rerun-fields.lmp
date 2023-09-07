@@ -19,7 +19,7 @@ if "${BC} == electrode" then &
     "variable label string ${label}.pot.${pot}"
 
 include parse_biases_label.lmp
-read_data ${DATADIR}data.${label}.prod
+read_data ${DATADIR}data.${label}.eq
 include ${FFDIR}ff.${FFLabel}.lmp
 
 # Turn off Non-Coulomb interactions
