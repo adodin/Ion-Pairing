@@ -1,0 +1,3 @@
+variable nStabilizeMax index 10000 10000 10000
+variable dtStabilize index 0.00001 0.01 0.1
+variable FMaxStabilized index 10000.0 1000.0 100.0
