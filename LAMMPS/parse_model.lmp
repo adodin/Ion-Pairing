@@ -5,7 +5,7 @@
 # Written By: Amro Dodin
 #
 # ANIONS Implemented: Cl, Cl2, CO3
-# CATIONS Implemented: Na
+# CATIONS Implemented: Na, Cs
 #
 # NOTE: Anion number & charge determine cation number via charge balance
 #
