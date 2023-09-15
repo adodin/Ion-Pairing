@@ -64,12 +64,32 @@ include ${FFDIR}ff.min.${FFLabel}.lmp
 if "${BC} == wall" then &
     "change_box all boundary p p f" &
     "fix wall all wall/lj126 zlo EDGE 0.1 ${ljRAu} 12.0 zhi EDGE 0.1 ${ljRAu} 12.0 units box" &
-elif "${BC} == electrode" &
+elif "(${BC} == electrode) || (${BC} == insulator)" &
     "# Update Lattice" &
     "lattice fcc ${aAu}" &
     "# Create On Lattice Electrode Regions" &
     "region rleft block EDGE EDGE EDGE EDGE -${Ezext} -${Ezint} units lattice" &
     "region rright block EDGE EDGE EDGE EDGE ${Ezint} ${Ezext} units lattice" &
+    "create_atoms ${BCType} region rleft" &
+    "create_atoms ${BCType} region rright" &
+    "# Displace Electrodes to target Locations" &
+    "group eleft region rleft" &
+    "group eright region rright" &
+    "group electrodes union eleft eright" &
+    "displace_atoms eleft move 0 0 ${Ezdisp} units lattice" &
+    "displace_atoms eright move 0 0 -${Ezdisp} units lattice" &
+    "fix freeze electrodes setforce 0 0 0" &
+    "change_box all z final -${Dint} ${Dint}" &
+elif "(${BC} == step_electrode)" &
+    "# Update Lattice" &
+    "lattice fcc ${aAu}" &
+    "# Create On Lattice Electrode Regions" &
+    "region rleft1 block EDGE EDGE EDGE EDGE -${Ezext} -${Ezint} units lattice" &
+    "region sleft block EDGE 0 EDGE EDGE -${Ezint} -${Ezstep} units lattice" &
+    "region rleft union 2 rleft1 sleft" &
+    "region rright1 block EDGE EDGE EDGE EDGE ${Ezint} ${Ezext} units lattice" &
+    "region sright block EDGE 0 EDGE EDGE ${Ezint} ${Ezcut} units lattice side out" &
+    "region rright intersect 2 rright1 sright" &
     "create_atoms ${BCType} region rleft" &
     "create_atoms ${BCType} region rright" &
     "# Displace Electrodes to target Locations" &

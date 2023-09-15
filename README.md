@@ -283,8 +283,7 @@ The relative path ```<DataDir>``` points to the directory where the simulation o
 The initialization set up for Drude Oscillator simulations is a bit more involved since we first have to set up a tip4p like box of water, then add the Drude particles to the polarizable species and attach them with new bonds.
 The ```polarizer.py``` script in ```SCRIPTS``` is provided by the authors of the LAMMPS DRUDE package to facilitate this process.
 Before we can use it however, we need to add labels to the masses section of the init data file and remove the pair potential specifications.
-To do this, we have provied the ```prep-pol-data.sh``` script which does this labeling for you.
-
+To do this, we have provied the ```prep-pol-data.sh``` script which does this labeling for you.v
 The ```prep-pol-data.sh``` script requires a sequence of flags that lists the atom types in the order they appear. 
 Polarizable atomic species are flagged just with their atom labels (e.g. ```-Na``` or ```-Cl```) which must appear in the ```FF/drude.dff``` Drude parameter file.
 Molecular species must be explicitly listed in the script.

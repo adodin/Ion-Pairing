@@ -111,13 +111,15 @@ elif "${BC} == slab" &
 elif "${BC} == wall" &
     "variable D equal v_Lz+v_ljRAu/v_a" &
     "variable comBias index 0" &
-elif "${BC} == electrode" &
+elif "(${BC} == electrode) || (${BC} == step_electrode) || (${BC} == insulator)" &
     "variable FFLabel string ${label}" &
     "variable comBias index 0" &
     "variable numBCTypes equal 1" & 
     "variable D equal v_Lz+v_ljRAu/v_a+2*v_aAu/v_a" &
     "variable Ez equal v_Lz*v_a/v_aAu+v_ljRAu/(v_aAu)" &		       
-    "variable Ezint equal ceil(v_Ez)" &	                    
+    "variable Ezint equal ceil(v_Ez)" &
+    "variable Ezstep equal v_Ezint-0.5" &
+    "variable Ezcut equal v_Ezint+0.5" &	                    
     "variable Ezext equal v_Ezint+2" &
     "variable Ezdisp equal v_Ezint-v_Ez" &
     "variable Dint equal v_D*v_a/v_aAu-v_Ezdisp"
@@ -175,4 +177,4 @@ variable specialsPerAtom equal v_bondsPerAtom
 
 if "${cationMolecular} == False" then "variable cationType equal v_numWaterTypes+1"
 if "${anionMolecular} == False" then "variable anionType equal v_numWaterTypes+v_numCationTypes+1"
-if "${BC} == electrode" then "variable BCType equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1"
+if "(${BC} == electrode) || (${BC} == step_electrode) || (${BC} == insulator)" then "variable BCType equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1"

@@ -38,7 +38,7 @@ else &
     "angle_coeff * 0 0" &
     "improper_coeff * 0 0" 
 
-if "${BC} == electrode" then &
+if "(${BC} == electrode) || (${BC} == step_electrode)" then &
     "variable label string ${label}.pot.${pot}"
 
 if "${pol} == ECC" then &
@@ -60,7 +60,7 @@ neigh_modify delay 0
 group waters type 1:${numWaterTypes}
 group cations type $((v_numWaterTypes+1)):$((v_numWaterTypes+v_numCationTypes))
 group anions type $((v_numWaterTypes+v_numCationTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes))
-if "${BC} == electrode" then &
+if "(${BC} == electrode) || (${BC} == step_electrode) || (${BC} == insulator)" then &
     "group electrodes type $((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+v_numBCTypes))" &
     "region rbot block EDGE EDGE EDGE EDGE EDGE 0" &
     "region rtop block EDGE EDGE EDGE EDGE 0 EDGE" &
@@ -121,7 +121,7 @@ if "${BC} == wall" then &
     "change_box all boundary p p f" &
     "kspace_modify slab 3.0" &
     "fix wall all wall/lj126 zlo EDGE 0.1 ${ljRAu} 12.0 zhi EDGE 0.1 ${ljRAu} 12.0 units box" &
-elif "${BC} == electrode" &
+elif "(${BC} == electrode) || (${BC} == step_electrode)" &
     "change_box all boundary p p f" &
     "kspace_modify slab 3.0" &
     "fix conp bot electrode/conp -$((v_pot/2)) ${eta} couple top $((v_pot/2)) symm on"
