@@ -11,7 +11,7 @@
 
 fix drude all drude C N N C C C D D D D 
 pair_style hybrid/overlay lj/cut/coul/long 12.0 thole 2.6 12.0
-kspace_style pppm 1.0e-3
+kspace_style pppm/electrode 1.0e-5
 
 # Masses:
 mass  1 15.200 # ODwC
