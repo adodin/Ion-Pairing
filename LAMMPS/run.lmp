@@ -86,17 +86,17 @@ if "${anionMolecular}==False" then &
 
 label skipCharges
 
-if "${cationMolecular}==True && ${anionMolecular}==True" then &
-    "group molecular union waters cations anions" &
+if "${cationRigid}==True && ${anionRigid}==True" then &
+    "group rigid_mol union waters cations anions" &
     "group simple empty" &
-elif "${cationMolecular}==True && ${anionMolecular}==False" &
-    "group molecular union waters cations" &
+elif "${cationRigid}==True && ${anionRigid}==False" &
+    "group rigid_mol union waters cations" &
     "group simple union anions" &
-elif "${cationMolecular}==False && ${anionMolecular}==True" &
-    "group molecular union waters anions" &
+elif "${cationRigid}==False && ${anionRigid}==True" &
+    "group rigid_mol union waters anions" &
     "group simple union cations" &
 else &
-    "group molecular union waters" &
+    "group rigid_mol union waters" &
     "group simple union cations anions" 
 
 if "${pol} == Drude" then &
@@ -183,7 +183,7 @@ velocity all zero angular
 
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT molecular rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
+fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
 if "${pol} == Drude" then &
     "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
@@ -214,7 +214,7 @@ variable TTarget equal ramp(1,$T)
 
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT molecular rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
+fix rigidNVT rigid_mol rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
 if "${pol} == Drude" then &
     "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDEquil}" &
@@ -255,7 +255,7 @@ timestep ${dt}
 
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtTEquil} tparam 10 10 3
+fix rigidNVT rigid_mol rigid/nvt molecule temp $T $T ${gtTEquil} tparam 10 10 3
 fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
 if "${pol} == Drude" then &
     "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
@@ -309,7 +309,7 @@ variable TTarget equal $T
 
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT molecular rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3
+fix rigidNVT rigid_mol rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3
 fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
 if "${pol} == Drude" then &
     "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTD}" &

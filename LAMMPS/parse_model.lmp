@@ -45,6 +45,7 @@ molecule h2o ${FFDIR}${water}.mol
 
 # Default Values for Simple Cations
 variable cationMolecular string False
+variable cationRigid string False
 variable qCation equal 1
 variable atomsPerCation equal 1
 variable numCationTypes equal 1
@@ -56,6 +57,20 @@ variable numCationImproperTypes equal 0
 variable cationBondsPerAtom equal 0
 variable cationAnglesPerAtom equal 0
 variable cationDihedralsPerAtom equal 0
+
+if "${cation} == Gdm" then &
+    "variable cationMolecular string True" &
+    "variable cationRigid string True" &
+    "variable qCation equal 1" &
+    "variable atomsPerCation equal 10" &
+    "variable numCationTypes equal 3" &
+    "variable numCationBondTypes equal 2" &
+    "variable numCationAngleTypes equal 3" &
+    "variable numCationDihedralTypes equal 1" &
+    "variable cationBondsPerAtom equal 3" &
+    "variable cationAnglesPerAtom equal 3" &
+    "variable cationDihedralsPerAtom equal 6" &
+    "molecule cation ${FFDIR}gdm.mol offset ${numWaterTypes} ${numWaterBondTypes} ${numWaterAngleTypes} 0 ${numWaterImproperTypes}"
 
 variable tOffset equal v_numWaterTypes+v_numCationTypes
 variable bOffset equal v_numWaterBondTypes+v_numCationBondTypes
@@ -69,6 +84,7 @@ variable iOffset equal v_numWaterImproperTypes+v_numCationImproperTypes
 
 # Default Values for Simple Anions
 variable anionMolecular string False
+variable anionRigid string False
 variable qAnion equal 1
 variable atomsPerAnion equal 1
 variable numAnionTypes equal 1
@@ -85,6 +101,7 @@ if "${anion} == Cl2" then &
     "variable qAnion equal 2" &
 elif "${anion} == CO3" &
     "variable anionMolecular string True" &
+    "variable anionRigid string True" &
     "variable qAnion equal 2" &
     "variable atomsPerAnion equal 4" &
     "variable numAnionTypes equal 2" &
@@ -168,7 +185,7 @@ if "${anionDihedralsPerAtom} > ${dihedralsPerAtom}" then "variable dihedralsPerA
 
 variable impropersPerAtom equal 1
 
-variable specialsPerAtom equal v_bondsPerAtom
+variable specialsPerAtom equal v_bondsPerAtom+v_anglesPerAtom+v_dihedralsPerAtom
 
 
 # =============================================================================
