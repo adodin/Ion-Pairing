@@ -21,6 +21,7 @@ pair_style soft 3.0
 bond_style harmonic 
 angle_style harmonic
 improper_style harmonic
+dihedral_style fourier
 
 if "${pol} == Drude" then &
     "variable label string ${pol}.${label}" &

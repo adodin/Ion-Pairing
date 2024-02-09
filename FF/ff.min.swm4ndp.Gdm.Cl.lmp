@@ -23,3 +23,6 @@ angle_coeff     5 1e5 115.0
 dihedral_style fourier
 dihedral_coeff  1 1 1e5 2 180.0
 
+improper_style harmonic 
+improper_coeff 1 1e5 0
+
