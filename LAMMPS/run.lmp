@@ -190,6 +190,8 @@ if "${pol} == Drude" then &
     "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
     "fix DrudeInverse all drude/transform/inverse"
 
+fix vel_rescale all temp/rescale ${stabVelRescaleEvery} ${stabVelRescaleTemp} ${stabVelRescaleTemp} ${stabVelRescaleMaxTemp} ${stabVelRescaleRatio}
+
 variable f equal fmax
 
 fix halter all halt ${nStabilizeBatch} v_f < ${FMaxStabilized} error continue
@@ -204,6 +206,7 @@ if "${pol} == Drude" then &
     "unfix DrudeInverse"
 unfix rigidNVT
 unfix simpleNVT
+unfix vel_rescale
 
 jump SELF StabilizeLoop
 

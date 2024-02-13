@@ -109,3 +109,8 @@ variable nStabilizeBatch index 100
 variable nHeat index 50000
 variable nEquil index 250000
 variable nProd index 1000000
+
+variable stabVelRescaleEvery index 1000 
+variable stabVelRescaleTemp index 0 
+variable stabVelRescaleMaxTemp index 1000 
+variable stabVelRescaleRatio index 1.0
