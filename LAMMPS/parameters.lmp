@@ -59,7 +59,7 @@ variable skipProd index False
 # Bias Flags
 variable zBias index False
 variable rBias index False
-variable kCOM index 1000
+variable kCOM index 10000
 
 # ==========================================================================
 # Output Parameters
