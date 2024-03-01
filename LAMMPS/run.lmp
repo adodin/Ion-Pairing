@@ -53,6 +53,7 @@ include ${FFDIR}ff.${FFLabel}.lmp
 #delete_bonds all multi 
 neighbor 2.0 bin
 neigh_modify delay 0
+comm_modify cutoff 30
 
 # =============================================================================
 # Set Up Groups
@@ -184,7 +185,7 @@ velocity all zero angular
 
 if "${pol} == Drude" then &
     "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
+fix rigidNVT rigid_mol rigid/nvt/small molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
 fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
 if "${pol} == Drude" then &
     "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &

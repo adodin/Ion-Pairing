@@ -14,9 +14,9 @@ if "${paramfile} != False" then &
 
 # Model Specifications
 units real
-#processors * * 1                           # Does not split along z to minimize wasted processors in slab
 variable SEED index 1                      # Parent Seed
 variable numAnions index 1
+variable numWaters index 0             # Can pass explicit water number for compatibility with packmol generation (initial condition random)
 variable cationOverlap index 0.00001       # Closest Distance (lattice units) between Water and Ions (requires LAMMPS 06/22/2022 or later)
 variable anionOverlap index 0.00001 
 variable water index tip4p
@@ -32,6 +32,7 @@ variable FFLabel string ${water}.${cation}.${anion}
 variable label string ${BC}.${FFLabel}
 variable DATADIR index ./
 variable FFDIR index ../FF/
+variable initialConfig index False
 
 # Physical Parameters
 variable rho equal 1.0         # Density (g/cm^3)
@@ -103,6 +104,9 @@ variable gtTD equal v_gTD*v_dt
 # ==========================================================================
 # Equilibration Parameters
 # ==========================================================================
+
+variable numMin index 1000
+variable numMinEval index 1000
 
 variable nStabilizeMax index 0
 variable nStabilizeBatch index 100
