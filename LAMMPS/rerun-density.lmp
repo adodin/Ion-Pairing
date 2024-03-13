@@ -1,0 +1,45 @@
+units real
+variable types index 1 2
+variable type_labels index "O" "H"
+variable dz index 1.0
+variable trajEvery index 100
+variable outFreq index 10000
+variable nEvery index ${trajEvery}
+variable nRepeat equal floor(v_outFreq/v_nEvery)
+
+variable first index 0
+variable last index 50000
+variable DATADIR index ./
+variable label index test_number
+
+atom_style full
+pair_style lj/cut/coul/long 12.0
+kspace_style pppm 1e-3
+bond_style harmonic 
+angle_style harmonic
+improper_style harmonic
+dihedral_style fourier
+
+read_data ${datafile} 
+
+pair_coeff * * 0 0
+
+group TOTAL empty
+
+label type_loop
+
+group ATOMS_${type_labels} type ${types}
+group TOTAL union TOTAL ATOMS_${type_labels}
+compute ${type_labels}_chunk ATOMS_${type_labels} chunk/atom bin/1d z center ${dz}
+fix rho_${type_labels} ATOMS_${type_labels} ave/chunk ${nEvery} ${nRepeat} ${outFreq} ${type_labels}_chunk density/mass &
+    file ${DATADIR}${type_labels}.rho.${label}.out
+
+next types type_labels
+jump SELF type_loop
+
+compute all_chunk TOTAL chunk/atom bin/1d z center ${dz}
+
+fix rho_T TOTAL ave/chunk ${nEvery} ${nRepeat} ${outFreq} all_chunk density/mass &
+    file ${DATADIR}rho.${label}.out
+
+rerun ${trajfile} first ${first} last ${last} dump x y z ix iy iz
