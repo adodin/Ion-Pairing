@@ -60,7 +60,7 @@ else &
     "create_atoms ${anionType} random ${numAnions} $S water_box overlap ${anionOverlap} maxtry 1000000 units lattice" &
 
 
-read_dump mixture.xyz 0 x y z box no format xyz
+#read_dump mixture.20.xyz 0 x y z box no format xyz
 
 # =============================================================================
 # Relax Overlap
