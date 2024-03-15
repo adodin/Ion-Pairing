@@ -22,6 +22,9 @@ dihedral_style fourier
 
 read_data ${datafile} 
 
+
+thermo ${nEvery}
+
 pair_coeff * * 0 0
 
 group TOTAL empty
