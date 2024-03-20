@@ -184,13 +184,34 @@ next dtStabilize
 velocity all zero linear
 velocity all zero angular
 
-if "${pol} == Drude" then &
-    "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
-fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
-if "${pol} == Drude" then &
-    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
-    "fix DrudeInverse all drude/transform/inverse"
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
+    "fix DrudeDirect all drude/transform/direct" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "comm_modify vel yes" &
+    "fix LANG all langevin/drude 1 ${gtTEquil} $S 1 ${gtTDEquil} $S" & 
+elif "(${pol} != Drude) && (${thermostat} == 2)" &   
+    "fix LANG all langevin 1 1 ${gtTEquil} $S"
+
+if "${thermostat} == 1" then &
+    "fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTEquil} tparam 10 10 3" &
+    "fix simpleNVT simple nvt temp 1 1 ${gtT} tloop 10 tchain 10" &
+elif "${thermostat} == 2" &
+    "fix rigidNVE rigid_mol rigid/nve molecule" &
+    "fix simpleNVE simple nve"
+
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
+    "fix DrudeNVT DRUDE nvt temp 1 1 ${gtTDEquil}" &
+    "fix DrudeInverse all drude/transform/inverse" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "fix DrudeNVE DRUDE nve"
+
+#if "${pol} == Drude" then &
+#    "fix DrudeDirect all drude/transform/direct"
+#fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
+#fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
+#if "${pol} == Drude" then &
+#    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
+#    "fix DrudeInverse all drude/transform/inverse"
 
 fix vel_rescale all temp/rescale ${stabVelRescaleEvery} ${stabVelRescaleTemp} ${stabVelRescaleTemp} ${stabVelRescaleMaxTemp} ${stabVelRescaleRatio}
 
@@ -202,12 +223,22 @@ run ${nStabilizeMax} pre yes post no
 next nStabilizeMax
 
 unfix halter
-if "${pol} == Drude" then &
+
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
     "unfix DrudeDirect" &
     "unfix DrudeNVT" &
-    "unfix DrudeInverse"
-unfix rigidNVT
-unfix simpleNVT
+    "unfix DrudeInverse" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "unfix DrudeNVE"
+
+if "${thermostat} == 1" then &
+    "unfix rigidNVT" &
+    "unfix simpleNVT" &
+elif "${thermostat} == 2" &
+    "unfix LANG" &
+    "unfix rigidNVE" &
+    "unfix simpleNVE"
+
 unfix vel_rescale
 
 jump SELF StabilizeLoop
@@ -218,13 +249,34 @@ variable TTarget equal ramp(1,$T)
 # Run Heating
 # =============================================================================
 
-if "${pol} == Drude" then &
-    "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT rigid_mol rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
-fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
-if "${pol} == Drude" then &
-    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDEquil}" &
-    "fix DrudeInverse all drude/transform/inverse"
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
+    "fix DrudeDirect all drude/transform/direct" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "comm_modify vel yes" &
+    "fix LANG all langevin/drude ${TTarget} ${gtTEquil} $S ${TD} ${gtTDEquil} $S" & 
+elif "(${pol} != Drude) && (${thermostat} == 2)" &   
+    "fix LANG all langevin 1 $T ${gtTEquil} $S"
+
+if "${thermostat} == 1" then &
+    "fix rigidNVT rigid_mol rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3" &
+    "fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10" &
+elif "${thermostat} == 2" &
+    "fix rigidNVE rigid_mol rigid/nve molecule" &
+    "fix simpleNVE simple nve"
+
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
+    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
+    "fix DrudeInverse all drude/transform/inverse" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "fix DrudeNVE DRUDE nve"
+
+#if "${pol} == Drude" then &
+#    "fix DrudeDirect all drude/transform/direct"
+#fix rigidNVT rigid_mol rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
+#fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
+#if "${pol} == Drude" then &
+#    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDEquil}" &
+#    "fix DrudeInverse all drude/transform/inverse"
 
 print "==============================================================="
 print "==============================================================="
@@ -249,23 +301,45 @@ run ${nHeat}
 # Run Equilibration
 # =============================================================================
 
-if "${pol} == Drude" then &
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
     "unfix DrudeDirect" &
     "unfix DrudeNVT" &
-    "unfix DrudeInverse"
-unfix rigidNVT
-unfix simpleNVT
+    "unfix DrudeInverse" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "unfix DrudeNVE"
+
+if "${thermostat} == 1" then &
+    "unfix rigidNVT" &
+    "unfix simpleNVT" &
+elif "${thermostat} == 2" &
+    "unfix LANG" &
+    "unfix rigidNVE" &
+    "unfix simpleNVE"
+
 variable TTarget equal $T
 
 timestep ${dt}
 
-if "${pol} == Drude" then &
-    "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT rigid_mol rigid/nvt molecule temp $T $T ${gtTEquil} tparam 10 10 3
-fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
-if "${pol} == Drude" then &
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
+    "fix DrudeDirect all drude/transform/direct" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "comm_modify vel yes" &
+    "fix LANG all langevin/drude $T ${gtTEquil} $S ${TD} ${gtTDEquil} $S" & 
+elif "(${pol} != Drude) && (${thermostat} == 2)" &   
+    "fix LANG all langevin $T $T ${gtTEquil} $S"
+
+if "${thermostat}==1" then &
+    "fix rigidNVT rigid_mol rigid/nvt molecule temp $T $T ${gtTEquil} tparam 10 10 3" &
+    "fix simpleNVT simple nvt temp $T $T ${gtTEquil} tloop 10 tchain 10" &
+elif "${thermostat} == 2" &
+    "fix rigidNVE rigid_mol rigid/nve molecule" &
+    "fix simpleNVE simple nve"
+
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
     "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTDEquil}" &
-    "fix DrudeInverse all drude/transform/inverse"
+    "fix DrudeInverse all drude/transform/inverse" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "fix DrudeNVE DRUDE nve"
 
 compute cz all chunk/atom bin/1d z center 0.5
 
@@ -285,12 +359,20 @@ write_data ${DATADIR}data.${label}.eq pair ij
 # Run Production
 # =============================================================================
 
-if "${pol} == Drude" then &
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
     "unfix DrudeDirect" &
     "unfix DrudeNVT" &
-    "unfix DrudeInverse"
-unfix rigidNVT
-unfix simpleNVT
+    "unfix DrudeInverse" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "unfix DrudeNVE"
+
+if "${thermostat} == 1" then &
+    "unfix rigidNVT" &
+    "unfix simpleNVT" &
+elif "${thermostat} == 2" &
+    "unfix LANG" &
+    "unfix rigidNVE" &
+    "unfix simpleNVE"
 
 label production
 
@@ -313,13 +395,34 @@ if "${skipEquil}==True" then &
 
 variable TTarget equal $T
 
-if "${pol} == Drude" then &
-    "fix DrudeDirect all drude/transform/direct"
-fix rigidNVT rigid_mol rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3
-fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
-if "${pol} == Drude" then &
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
+    "fix DrudeDirect all drude/transform/direct" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "comm_modify vel yes" &
+    "fix LANG all langevin/drude $T ${gtT} $S ${TD} ${gtTD} $S" & 
+elif "(${pol} != Drude) && (${thermostat} == 2)" &   
+    "fix LANG all langevin $T $T ${gtT} $S"
+
+if "${thermostat} == 1" then &
+    "fix rigidNVT rigid_mol rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3" &
+    "fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10" &
+elif "${thermostat} == 2" &
+    "fix rigidNVE rigid_mol rigid/nve molecule" &
+    "fix simpleNVE simple nve"
+
+if "(${pol} == Drude) && (${thermostat} == 1)" then &
     "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTD}" &
-    "fix DrudeInverse all drude/transform/inverse"
+    "fix DrudeInverse all drude/transform/inverse" &
+elif "(${pol} == Drude) && (${thermostat} == 2)" &
+    "fix DrudeNVE DRUDE nve"
+
+#if "${pol} == Drude" then &
+#    "fix DrudeDirect all drude/transform/direct"
+#fix rigidNVT rigid_mol rigid/nvt molecule temp $T $T ${gtT} tparam 10 10 3
+#fix simpleNVT simple nvt temp $T $T ${gtT} tloop 10 tchain 10
+#if "${pol} == Drude" then &
+#    "fix DrudeNVT DRUDE nvt temp ${TD} ${TD} ${gtTD}" &
+#    "fix DrudeInverse all drude/transform/inverse"
 
 dump 1 all custom ${atomEvery} ${DATADIR}prod.${label}.lammpstrj id mol type q x y z vx vy vz ix iy iz
 if "$((count(biased))) > 0" then &

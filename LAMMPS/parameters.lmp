@@ -23,6 +23,7 @@ variable water index tip4p
 variable cation index Na
 variable anion index Cl
 variable BC index box
+variable thermostat index 1         # 1 for Nose-Hoover 2 for Langevin
 variable pol index False
 variable ECC index 0.75
 variable sym index sym  #  If using Drude Forcefields should you use symmetrised force fields
