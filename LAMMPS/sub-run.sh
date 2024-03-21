@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -pe mpi 24
+#$ -pe mpi 8
 #$ -j y
 #$ -N IP-run
 #$ -V
@@ -40,7 +40,7 @@ echo "Optional Arguments: $@"
 mkdir $DATADIR
 
 # Run Job
-mpirun -np 24 lmp -in run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+mpirun -np 8 lmp -in run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
   -v cation $cation -v anion $anion -v BC $BC $@
 
 # Move Log File to DATADIR
