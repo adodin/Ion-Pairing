@@ -188,13 +188,13 @@ if "(${pol} == Drude) && (${thermostat} == 1)" then &
     "fix DrudeDirect all drude/transform/direct" &
 elif "(${pol} == Drude) && (${thermostat} == 2)" &
     "comm_modify vel yes" &
-    "fix LANG all langevin/drude 1 ${gtTEquil} $S 1 ${gtTDEquil} $S" & 
+    "fix LANG all langevin/drude 1 ${gtTStabilize} $S 1 ${gtTDStabilize} $S" & 
 elif "(${pol} != Drude) && (${thermostat} == 2)" &   
-    "fix LANG all langevin 1 1 ${gtTEquil} $S"
+    "fix LANG all langevin 1 1 ${gtTStabilize} $S"
 
 if "${thermostat} == 1" then &
-    "fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTEquil} tparam 10 10 3" &
-    "fix simpleNVT simple nvt temp 1 1 ${gtT} tloop 10 tchain 10" &
+    "fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3" &
+    "fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10" &
 elif "${thermostat} == 2" &
     "fix rigidNVE rigid_mol rigid/nve molecule" &
     "fix simpleNVE simple nve"
