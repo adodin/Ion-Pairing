@@ -184,34 +184,13 @@ next dtStabilize
 velocity all zero linear
 velocity all zero angular
 
-if "(${pol} == Drude) && (${thermostat} == 1)" then &
-    "fix DrudeDirect all drude/transform/direct" &
-elif "(${pol} == Drude) && (${thermostat} == 2)" &
-    "comm_modify vel yes" &
-    "fix LANG all langevin/drude 1 ${gtTStabilize} $S 1 ${gtTDStabilize} $S" & 
-elif "(${pol} != Drude) && (${thermostat} == 2)" &   
-    "fix LANG all langevin 1 1 ${gtTStabilize} $S"
-
-if "${thermostat} == 1" then &
-    "fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3" &
-    "fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10" &
-elif "${thermostat} == 2" &
-    "fix rigidNVE rigid_mol rigid/nve molecule" &
-    "fix simpleNVE simple nve"
-
-if "(${pol} == Drude) && (${thermostat} == 1)" then &
-    "fix DrudeNVT DRUDE nvt temp 1 1 ${gtTDEquil}" &
-    "fix DrudeInverse all drude/transform/inverse" &
-elif "(${pol} == Drude) && (${thermostat} == 2)" &
-    "fix DrudeNVE DRUDE nve"
-
-#if "${pol} == Drude" then &
-#    "fix DrudeDirect all drude/transform/direct"
-#fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
-#fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
-#if "${pol} == Drude" then &
-#    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
-#    "fix DrudeInverse all drude/transform/inverse"
+if "${pol} == Drude" then &
+    "fix DrudeDirect all drude/transform/direct"
+fix rigidNVT rigid_mol rigid/nvt molecule temp 1 1 ${gtTStabilize} tparam 10 10 3
+fix simpleNVT simple nvt temp 1 1 ${gtTStabilize} tloop 10 tchain 10
+if "${pol} == Drude" then &
+    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDStabilize}" &
+    "fix DrudeInverse all drude/transform/inverse"
 
 fix vel_rescale all temp/rescale ${stabVelRescaleEvery} ${stabVelRescaleTemp} ${stabVelRescaleTemp} ${stabVelRescaleMaxTemp} ${stabVelRescaleRatio}
 
@@ -224,20 +203,13 @@ next nStabilizeMax
 
 unfix halter
 
-if "(${pol} == Drude) && (${thermostat} == 1)" then &
+if "${pol} == Drude" then &
     "unfix DrudeDirect" &
     "unfix DrudeNVT" &
     "unfix DrudeInverse" &
-elif "(${pol} == Drude) && (${thermostat} == 2)" &
-    "unfix DrudeNVE"
 
-if "${thermostat} == 1" then &
-    "unfix rigidNVT" &
-    "unfix simpleNVT" &
-elif "${thermostat} == 2" &
-    "unfix LANG" &
-    "unfix rigidNVE" &
-    "unfix simpleNVE"
+unfix rigidNVT
+unfix simpleNVT
 
 unfix vel_rescale
 
