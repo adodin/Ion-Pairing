@@ -3,7 +3,6 @@
 #$ -pe mpi 8
 #$ -j y
 #$ -V
-#$ -N rho_Gdm
-#$ -q regular
+#$ -N rho_water
 
-mpirun -np 8 lmp -in rerun-density.lmp -v datafile ~/DATA/Ion-Pairing/Gdm.Cl/slab/replica2/data.Drude.slab.swm4ndp.Gdm.Cl.eq -v trajfile ~/DATA/Ion-Pairing/Gdm.Cl/slab/replica2/prod.Drude.slab.swm4ndp.Gdm.Cl.lammpstrj -v trajEvery 1000 -v outFreq 15000000 -v last 15000000 -v DATADIR ~/DATA/Ion-Pairing/Gdm.Cl/slab/replica2/ -v label Gdm.Drude.slab.swm4ndp.Gdm.Cl -v types 4 5 6 -v type_labels N C H
+mpirun -np ${NSLOTS} lmp -in rerun-density.lmp -v datafile ~/DATA/Ion-Pairing/Gdm.Cl/slab/replica2/data.Drude.slab.swm4ndp.Gdm.Cl.eq -v trajfile ~/DATA/Ion-Pairing/Gdm.Cl/slab/replica2/prod.Drude.slab.swm4ndp.Gdm.Cl.lammpstrj -v trajEvery 1000 -v outFreq 15000000 -v last 15000000 -v DATADIR ~/DATA/Ion-Pairing/Gdm.Cl/slab/replica2/ -v label water.Drude.slab.swm4ndp.Gdm.Cl

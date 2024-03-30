@@ -45,4 +45,4 @@ compute all_chunk TOTAL chunk/atom bin/1d z center ${dz}
 fix rho_T TOTAL ave/chunk ${nEvery} ${nRepeat} ${outFreq} all_chunk density/mass &
     file ${DATADIR}rho.${label}.out
 
-rerun ${trajfile} first ${first} last ${last} dump x y z ix iy iz
+rerun ${trajfile} first ${first} last ${last} dump x y z

@@ -4,7 +4,6 @@
 #$ -j y
 #$ -N IPU-run
 #$ -V
-#$ -q regular
 #$ -hold_jid IP-min
 
 # REQUIRED ARGS: CATION ANION BC REPLICA_LABEL [BIAS STRINGS]
@@ -133,7 +132,7 @@ echo "Optional Arguments: $@"
 mkdir $DATADIR
 
 # Run Job
-mpirun -np 8 lmp -in run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+mpirun -np ${NSLOTS} lmp -in run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
   -v cation $cation -v anion $anion -v BC $BC ${biasString} $@
 
 # Move Log File to DATADIR
