@@ -82,7 +82,7 @@ if "${cationMolecular}==False" then &
     "set type ${cationType} charge ${qCation}"
 
 if "${anionMolecular}==False" then &
-    "set type ${anionType} charge ${qAnion}"
+    "set type ${anionType} charge -${qAnion}"
 
 
 label skipCharges
