@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -pe mpi 8
+#$ -pe smp 24
 #$ -j y
 #$ -N IP-run
 #$ -V

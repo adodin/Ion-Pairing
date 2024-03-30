@@ -43,7 +43,7 @@ if "(${BC} == electrode) || (${BC} == step_electrode)" then &
     "variable label string ${label}.pot.${pot}"
 
 if "${pol} == ECC" then &
-    "variable label string ${pol}.${label}" &
+    "variable label string ${pol}.${ECC}.${label}" &
     "variable FFLabel string ${pol}.${FFLabel}"
 
 log ${DATADIR}eq.${label}.log
