@@ -39,9 +39,6 @@ else &
     "angle_coeff * 0 0" &
     "improper_coeff * 0 0" 
 
-# Rebalances Load on processors to account for (e.g. slab vacuum region)
-balance 1.0 shift z 10 1.1
-
 if "(${BC} == electrode) || (${BC} == step_electrode)" then &
     "variable label string ${label}.pot.${pot}"
 
@@ -56,6 +53,9 @@ include ${FFDIR}ff.${FFLabel}.lmp
 #delete_bonds all multi 
 neighbor 2.0 bin
 neigh_modify delay 0
+
+# Rebalances Load on processors to account for (e.g. slab vacuum region)
+balance 1.0 shift z 10 1.1
 
 # =============================================================================
 # Set Up Groups
