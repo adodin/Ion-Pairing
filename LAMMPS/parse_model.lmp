@@ -192,6 +192,16 @@ variable specialsPerAtom equal v_bondsPerAtom+v_anglesPerAtom+v_dihedralsPerAtom
 # Determine Type Numbers for Simple Ions
 # =============================================================================
 
-if "${cationMolecular} == False" then "variable cationType equal v_numWaterTypes+1"
-if "${anionMolecular} == False" then "variable anionType equal v_numWaterTypes+v_numCationTypes+1"
+if "${cationMolecular} == False" then &
+    "variable cationType equal v_numWaterTypes+1" &
+    else &
+    "variable cationType1 equal v_numWaterTypes+1" &
+    "variable cationType2 equal v_numWaterTypes+v_numCationTypes"&
+    "variable cationType index ${cationType1}*${cationType2}"
+if "${anionMolecular} == False" then &
+    "variable anionType equal v_numWaterTypes+v_numCationTypes+1" &
+else &
+    "variable anionType1 equal v_numWaterTypes+v_numCationTypes+1" &
+    "variable anionType2 equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes"&
+    "variable anionType index ${anionType1}*${anionType2}"
 if "(${BC} == electrode) || (${BC} == step_electrode) || (${BC} == insulator)" then "variable BCType equal v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1"
