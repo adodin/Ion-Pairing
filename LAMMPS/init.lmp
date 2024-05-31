@@ -111,6 +111,8 @@ elif "(${BC} == step_electrode)" &
     "fix freeze electrodes setforce 0 0 0" &
     "change_box all z final -${Dint} ${Dint}"
 
+# Rebalance processors (mostly for slab simulations w/z vacuum)
+balance 1.2 shift z 5 1.0
 
 thermo_style custom step pe density fmax fnorm
 thermo 10

@@ -47,6 +47,7 @@ if "${pol} == ECC" then &
     "variable FFLabel string ${pol}.${FFLabel}"
 
 log ${DATADIR}eq.${label}.log
+balance 1.2 shift z 10 1.0
 
 # Read in Force Field
 include ${FFDIR}ff.${FFLabel}.lmp
