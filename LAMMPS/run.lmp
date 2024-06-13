@@ -368,7 +368,7 @@ if "${skipProd}==True" then &
 reset_timestep 0
 
 
-log ${DATADIR}eq.${label}.log
+log ${DATADIR}prdo.${label}.log
 
 if "${skipEquil}==True" then &
     "read_dump ${DATADIR}eq.${label}.lammpstrj ${nEquil} x y z vx vy vz q ix iy iz" &
