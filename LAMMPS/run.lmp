@@ -47,10 +47,12 @@ if "${pol} == ECC" then &
     "variable FFLabel string ${pol}.${FFLabel}"
 
 log ${DATADIR}eq.${label}.log
-balance 1.2 shift z 10 1.0
 
 # Read in Force Field
 include ${FFDIR}ff.${FFLabel}.lmp
+
+balance 1.2 shift z 10 1.0
+
 #delete_bonds all multi 
 neighbor 2.0 bin
 neigh_modify delay 0
@@ -368,7 +370,7 @@ if "${skipProd}==True" then &
 reset_timestep 0
 
 
-log ${DATADIR}prdo.${label}.log
+log ${DATADIR}prod.${label}.log
 
 if "${skipEquil}==True" then &
     "read_dump ${DATADIR}eq.${label}.lammpstrj ${nEquil} x y z vx vy vz q ix iy iz" &
