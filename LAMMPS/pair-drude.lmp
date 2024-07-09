@@ -1,6 +1,0 @@
-# interactions involving Drude particles
-pair_coeff    *   8* coul/long/cs
-# Thole damping if more than 1 Drude per molecule
-pair_coeff    1    1 thole   0.978
-pair_coeff    1    8 thole   0.978
-pair_coeff    8    8 thole   0.978
