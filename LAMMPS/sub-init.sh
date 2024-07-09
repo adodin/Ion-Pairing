@@ -1,13 +1,11 @@
 #!/bin/bash
 #$ -cwd
+#$ -pe smp 8
 #$ -j y
 #$ -N IP-min
 #$ -V
 
 # REQUIRED ARGS: CATION ANION BC REPLICA_LABEL
-
-
-echo ${SGE_O_WORKDIR} 
 
 # Get Current Working Directory
 WORKINGDIR=$( pwd )/
