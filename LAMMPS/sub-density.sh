@@ -1,6 +1,7 @@
 #!/bin/bash
 #$ -cwd
 #$ -pe smp 8
+#$ -l slots=2
 #$ -j y
 #$ -V
 #$ -N rho_water

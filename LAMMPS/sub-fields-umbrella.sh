@@ -1,6 +1,7 @@
 #!/bin/bash
 #$ -cwd
 #$ -pe smp 8
+#$ -l slots=2
 #$ -j y
 #$ -N EFU-run
 #$ -V

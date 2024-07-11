@@ -2,6 +2,7 @@
 #$ -cwd
 #$ -pe smp 8
 #$ -j y
+#$ -l slots=2
 #$ -N IPU-run
 #$ -V
 #$ -hold_jid IP-min
