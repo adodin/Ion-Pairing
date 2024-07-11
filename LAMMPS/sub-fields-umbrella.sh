@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -pe mpi 8
+#$ -pe smp 8
 #$ -j y
 #$ -N EFU-run
 #$ -V
