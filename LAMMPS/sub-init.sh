@@ -21,8 +21,8 @@ replica=$1
 shift
 
 # Construct Data Directory Label
-DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/${BC}/replica${replica}/init
-mkdir -p ${DATADIR}
+DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/${BC}/replica${replica}/
+
 
 # Announce Settings
 echo "Script Directory: $WORKINGDIR"
@@ -34,6 +34,15 @@ echo "Replica: $replica"
 let "SEED = ${JOB_ID}"
 echo "SEED: $SEED"
 echo "Optional Arguments: $@"
+
+# Checks if jobs run across too many jobs
+if (( $NHOSTS > 1 )); then
+    echo "ERROR: Running on more than one host."
+    echo $@ > $JOB_NAME.${JOB_ID}.HOSTERROR
+    cat $PE_HOSTFILE >> $JOB_NAME.${JOB_ID}.HOSTERROR
+    exit
+      
+mkdir -p ${DATADIR}/init/
 
 # Run Job
 run_min=True

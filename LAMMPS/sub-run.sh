@@ -35,8 +35,16 @@ let "SEED = ${JOB_ID}"
 echo "SEED: $SEED"
 echo "Optional Arguments: $@"
 
+# Checks if jobs run across too many jobs
+if (( $NHOSTS > 1 )); then
+    echo "ERROR: Running on more than one host."
+    echo $@ > $JOB_NAME.${JOB_ID}.HOSTERROR
+    cat $PE_HOSTFILE >> $JOB_NAME.${JOB_ID}.HOSTERROR
+    exit
+    
 # Create DATADIR
-mkdir $DATADIR
+mkdir -p $DATADIR/equil/
+mkdir -p ${DATADIR}/prod/
 
 # Run Job
 mpirun -np ${NSLOTS} lmp -in run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
