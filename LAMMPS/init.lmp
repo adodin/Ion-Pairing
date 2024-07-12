@@ -10,7 +10,7 @@
 include parameters.lmp
 include parse_model.lmp
 
-log ${DATADIR}init.${label}.log
+log ${DATADIR}/init/init.${label}.log
 
 # =============================================================================
 # Create Simulation Box
@@ -117,7 +117,7 @@ balance 1.2 shift z 5 1.0
 thermo_style custom step pe density fmax fnorm
 thermo 10
 
-dump 1 all atom ${minEvery} ${DATADIR}init.${label}.lammpstrj
+dump 1 all atom ${minEvery} ${DATADIR}/init/init.${label}.lammpstrj
 
 minimize 0 0 ${numMin} ${numMinEval}
 
@@ -132,4 +132,4 @@ else &
     "set type ${anionType} charge -${qAnion}" &
     "set type ${cationType} charge ${qCation}" 
 
-write_data ${DATADIR}data.${label}.init
+write_data ${DATADIR}/init/data.${label}.init
