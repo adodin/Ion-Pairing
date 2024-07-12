@@ -1,7 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -pe smp 24
-#$  -l slots=2
+#$ -pe smp 2-24
 #$ -j y
 #$ -N IP-run
 #$ -V

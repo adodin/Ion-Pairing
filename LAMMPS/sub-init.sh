@@ -1,7 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -pe smp 8
-#$ -l slots=2
+#$ -pe smp 2-8
 #$ -j y
 #$ -N IP-min
 #$ -V
@@ -22,11 +21,8 @@ replica=$1
 shift
 
 # Construct Data Directory Label
-DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/
-mkdir ${DATADIR}
-DATADIR=${DATADIR}${BC}/
-mkdir ${DATADIR}
-DATADIR=${DATADIR}replica${replica}/
+DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/${BC}/replica${replica}/init
+mkdir -p ${DATADIR}
 
 # Announce Settings
 echo "Script Directory: $WORKINGDIR"
@@ -38,9 +34,6 @@ echo "Replica: $replica"
 let "SEED = ${JOB_ID}"
 echo "SEED: $SEED"
 echo "Optional Arguments: $@"
-
-# Create DATADIR
-mkdir $DATADIR
 
 # Run Job
 run_min=True
@@ -55,7 +48,6 @@ while [[ $run_min == True ]]; do
     run_min=False
   fi
 done
-
 
 # Move Log File to DATADIR
 mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID} ${DATADIR}.
