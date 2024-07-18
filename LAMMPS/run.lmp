@@ -133,7 +133,7 @@ elif "(${BC} == electrode) || (${BC} == step_electrode)" &
     "kspace_modify slab 3.0" &
     "fix conp bot electrode/conp -$((v_pot/2)) ${eta} couple top $((v_pot/2)) symm on"
 
-variable thermo_spec string "step v_TTarget temp pe density ke fmax"
+variable thermo_spec string "step v_TTarget temp pe fmax"
 
 include parse_biases.lmp
 
@@ -142,14 +142,6 @@ include parse_biases.lmp
 # =============================================================================
 
 variable TTarget equal 1
-
-group OH type 1 2
-compute oh_list OH property/local batom1 batom2
-compute oh_bonds OH bond/local dist
-compute oh_max OH reduce max c_oh_bonds
-compute oh_which_max OH reduce max c_oh_list[1] c_oh_list[2] c_oh_bonds replace 1 3 replace 2 3
-
-variable thermo_spec string "${thermo_spec} c_oh_which_max[*]"
 
 thermo_style custom ${thermo_spec}
 compute myTemp mobile temp
@@ -220,9 +212,6 @@ jump SELF StabilizeLoop
 
 undump 1
 
-if "$((count(biased))) > 0" then &
-    "undump 2" 
-
 reset_timestep 0
 
 variable TTarget equal ramp(1,$T)
@@ -251,14 +240,6 @@ if "(${pol} == Drude) && (${thermostat} == 1)" then &
     "fix DrudeInverse all drude/transform/inverse" &
 elif "(${pol} == Drude) && (${thermostat} == 2)" &
     "fix DrudeNVE DRUDE nve"
-
-#if "${pol} == Drude" then &
-#    "fix DrudeDirect all drude/transform/direct"
-#fix rigidNVT rigid_mol rigid/nvt molecule temp 1 $T ${gtTEquil} tparam 10 10 3
-#fix simpleNVT simple nvt temp 1 $T ${gtT} tloop 10 tchain 10
-#if "${pol} == Drude" then &
-#    "fix DrudeNVT DRUDE nvt temp 1 ${TD} ${gtTDEquil}" &
-#    "fix DrudeInverse all drude/transform/inverse"
 
 print "==============================================================="
 print "==============================================================="

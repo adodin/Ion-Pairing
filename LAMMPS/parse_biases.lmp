@@ -162,7 +162,7 @@ fix rBias${rBiasCounter} rGroup${rBiasCounter}_1 spring couple rGroup${rBiasCoun
 compute r${rBiasCounter}_1 rGroup${rBiasCounter}_1 com
 compute r${rBiasCounter}_2 rGroup${rBiasCounter}_2 com
 variable r${rBiasCounter} equal sqrt((c_r${rBiasCounter}_1[1]-c_r${rBiasCounter}_2[1])^2+(c_r${rBiasCounter}_1[2]-c_r${rBiasCounter}_2[2])^2+(c_r${rBiasCounter}_1[3]-c_r${rBiasCounter}_2[3])^2)
-variable rDev${rBiasCounter} equal (v_r${rBiasCounter}-v_rTarget${rBiasCounter})/v_rStDev${rBiasCounter}
+#variable rDev${rBiasCounter} equal (v_r${rBiasCounter}-v_rTarget${rBiasCounter})/v_rStDev${rBiasCounter}
 variable thermo_spec string "${thermo_spec} v_rTarget${rBiasCounter} v_r${rBiasCounter} f_rBias${rBiasCounter}"
 
 variable label string ${label}.${r0}.k.$k
@@ -179,15 +179,15 @@ label rBreak
 if "${comBias} == 0" then &
     "jump SELF comBreak"
 
-variable cStDev equal sqrt(v_kT/${comBias})
+#variable cStDev equal sqrt(v_kT/${comBias})
 
 variable comTarget equal 0
 group comGroup subtract all biased
 fix comBias comGroup spring tether ${comBias} NULL NULL 0 0
 compute COM comGroup com
 
-variable cDev equal (c_COM[3])/v_cStDev
+#variable cDev equal (c_COM[3])/v_cStDev
 
-variable thermo_spec string "${thermo_spec} v_comTarget c_COM[3] v_cDev"
+variable thermo_spec string "${thermo_spec} v_comTarget c_COM[3] f_comBias"
 
 label comBreak

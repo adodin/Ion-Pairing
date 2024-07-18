@@ -31,7 +31,7 @@ variable sym index sym  #  If using Drude Forcefields should you use symmetrised
 # System Label & File Locations
 variable FFLabel string ${water}.${cation}.${anion}
 variable label string ${BC}.${FFLabel}
-variable DATADIR index ./
+variable DATADIR index ../DATA/
 variable FFDIR index ../FF/
 variable initialConfig index False
 

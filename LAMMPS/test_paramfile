@@ -1,0 +1,5 @@
+variable nHeat index 1000
+variable nEquil index 1000
+variable nProd index 1000
+variable atomEvery index 100
+variable thermoEvery index 100
