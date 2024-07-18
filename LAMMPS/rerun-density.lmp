@@ -29,6 +29,7 @@ if "${BC} == electrode" then &
     "variable label string ${label}.pot.${pot}"
 
 include parse_biases_label.lmp
+log ${DATADIR}/post/rho.${label}.log
 read_data ${DATADIR}/equil/data.${label}.eq
 include ${FFDIR}ff.${FFLabel}.lmp
 

@@ -46,7 +46,6 @@ if "${pol} == ECC" then &
     "variable label string ${pol}.${ECC}.${label}" &
     "variable FFLabel string ${pol}.${FFLabel}"
 
-log ${DATADIR}/equil/eq.${label}.log
 
 # Read in Force Field
 include ${FFDIR}ff.${FFLabel}.lmp
@@ -67,6 +66,12 @@ balance 1.0 shift z 10 1.1
 group waters type 1:${numWaterTypes}
 group cations type $((v_numWaterTypes+1)):$((v_numWaterTypes+v_numCationTypes))
 group anions type $((v_numWaterTypes+v_numCationTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes))
+
+variable thermo_spec string "step v_TTarget temp pe fmax"
+include parse_biases.lmp
+
+log ${DATADIR}/equil/eq.${label}.log
+
 if "(${BC} == electrode) || (${BC} == step_electrode) || (${BC} == insulator)" then &
     "group electrodes type $((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+1)):$((v_numWaterTypes+v_numCationTypes+v_numAnionTypes+v_numBCTypes))" &
     "region rbot block EDGE EDGE EDGE EDGE EDGE 0" &
@@ -133,9 +138,6 @@ elif "(${BC} == electrode) || (${BC} == step_electrode)" &
     "kspace_modify slab 3.0" &
     "fix conp bot electrode/conp -$((v_pot/2)) ${eta} couple top $((v_pot/2)) symm on"
 
-variable thermo_spec string "step v_TTarget temp pe fmax"
-
-include parse_biases.lmp
 
 # =============================================================================
 # Set Up Outputs
