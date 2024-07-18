@@ -11,6 +11,9 @@ bond_style harmonic
 angle_style harmonic
 improper_style harmonic
 
+variable first index 0
+variable last index ${nProd}
+
 if "${pol} == Drude" then &
     "variable label string ${pol}.${label}" &
     "variable FFLabel string ${pol}.${FFLabel}" 
@@ -19,7 +22,7 @@ if "${BC} == electrode" then &
     "variable label string ${label}.pot.${pot}"
 
 include parse_biases_label.lmp
-read_data ${DATADIR}data.${label}.eq
+read_data ${DATADIR}/equil/data.${label}.eq
 include ${FFDIR}ff.${FFLabel}.lmp
 
 # Turn off Non-Coulomb interactions
@@ -35,6 +38,6 @@ improper_coeff * 0 0
 
 # Define Potential Compute
 compute pot all pe/atom
-dump 1 all custom ${atomEvery} ${DATADIR}EF.${label}.lammpstrj id mol type q x y z c_pot fx fy fz
+dump 1 all custom ${atomEvery} ${DATADIR}/post/EF.${label}.lammpstrj id mol type q x y z c_pot fx fy fz
 thermo 1
-rerun ${DATADIR}prod.${label}.lammpstrj first 0 last ${nProd} every ${atomEvery} dump x y z ix iy iz q 
+rerun ${DATADIR}/prod/prod.${label}.lammpstrj first 0 last ${nProd} every ${atomEvery} dump x y z ix iy iz q 
