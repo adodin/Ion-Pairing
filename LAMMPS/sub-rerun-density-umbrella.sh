@@ -14,14 +14,17 @@
 # Import sub utility functions
 source sub-utilities.sh
 
+args_left=$@
+
 # Parse Arguments
-parse_global_args
+parse_global_args $args_left
 if [ -z ${SGE_TASK_ID} ]; then
-  parse_umbrella_bias_spec
-  construct_bias_string
+  parse_umbrella_bias_spec $args_left
+  construct_bias_string 
 fi
-announce_global_args
+announce_global_args $args_left
 check_cross_node_job
+
 
 # Create DATADIR
 mkdir -p $DATADIR/post/

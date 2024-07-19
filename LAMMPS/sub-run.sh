@@ -11,9 +11,11 @@
 # Import sub utility functions
 source sub-utilities.sh
 
+args_left=$@
+
 # Parse Arguments
-parse_global_args
-announce_global_args
+parse_global_args $args_left
+announce_global_args $args_left
 check_cross_node_job
 
 # Create DATADIR
