@@ -8,11 +8,13 @@
 # REQUIRED ARGS: CATION ANION BC REPLICA_LABEL
 
 # Import sub utility functions
-source sub-utilities.sh
+source ./sub-utilities.sh
+
+args_left=$@
 
 # Parse Arguments
-parse_global_args
-announce_global_args
+parse_global_args $args_left
+announce_global_args $args_left
 check_cross_node_job
 
 # Make Data Directory      
@@ -33,4 +35,4 @@ while [[ $run_min == True ]]; do
 done
 
 # Move Log File to DATADIR
-clean_up_job
+#clean_up_job

@@ -8,6 +8,7 @@ parse_global_args(){
 
     # Parse Required Args
     cation=$1
+    echo "Cation in function $cation"
     shift
     anion=$1
     shift
@@ -18,6 +19,8 @@ parse_global_args(){
 
     # Construct Data Directory Label
     DATADIR=~/DATA/Ion-Pairing/${cation}.${anion}/${BC}/replica${replica}/
+    
+    args_left=$@
 }
 
 
@@ -44,7 +47,8 @@ check_cross_node_job(){
             echo $@ > $JOB_NAME.${JOB_ID}.HOSTERROR
             cat $PE_HOSTFILE >> $JOB_NAME.${JOB_ID}.HOSTERROR
         fi
-        exit 2 
+        exit 2
+    fi
 }
 
 
@@ -100,6 +104,7 @@ parse_umbrella_bias_spec(){
         break
     esac
     done
+    args_left=$@
 }
 
 
