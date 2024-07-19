@@ -26,7 +26,7 @@ label=$BC.tip4p.$cation.$anion
 while [[ $run_min == True ]]; do
   mpirun -np ${NSLOTS} lmp -in ../LAMMPS/init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
     -v cation $cation -v anion $anion -v BC ${BC} $@
-  if grep -q "WARNING: Only inserted" ${DATADIR}/data.${label}.init; then
+  if grep -q "WARNING: Only inserted" ${DATADIR}/init/data.${label}.init; then
     echo "Failed To Place All Ions. Trying Again"
     SEED=$((SEED+1))
   else
@@ -35,4 +35,5 @@ while [[ $run_min == True ]]; do
 done
 
 # Move Log File to DATADIR
-#clean_up_job
+DATADIR=${DATADIR}/init/
+clean_up_job

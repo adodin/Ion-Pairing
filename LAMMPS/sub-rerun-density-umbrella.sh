@@ -12,7 +12,7 @@
 # -r c|a|id N c|a|id M k r0_min dr num_r
 
 # Import sub utility functions
-source sub-utilities.sh
+source ./sub-utilities.sh
 
 args_left=$@
 
@@ -34,4 +34,5 @@ mpirun -np ${NSLOTS} lmp -in rerun-fields.lmp -v DATADIR ${DATADIR} -v SEED $SEE
   -v cation $cation -v anion $anion -v BC $BC ${biasString} $@
 
 # Move Log File to DATADIR
+DATADIR=${DATADIR}/post/
 clean_up_job
