@@ -2,9 +2,9 @@
 #$ -cwd
 #$ -pe smp 2-8
 #$ -j y
-#$ -N EFU-run
+#$ -N EF
 #$ -V
-#$ -hold_jid IP-min
+#$ -hold_jid IP-run
 
 # REQUIRED ARGS: CATION ANION BC REPLICA_LABEL [BIAS STRINGS]
 # Bias String options (Each Add a Loop Layer):

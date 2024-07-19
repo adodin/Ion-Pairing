@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -pe smp 2-8
 #$ -j y
-#$ -N IPU-run
+#$ -N IP-run
 #$ -V
 #$ -hold_jid IP-min
 
