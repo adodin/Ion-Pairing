@@ -41,11 +41,11 @@ check_cross_node_job(){
     if (( $NHOSTS > 1 )); then
             echo "ERROR: Running on more than one host."
         if [ -z ${SGE_TASK_ID} ]; then
-            echo $@ > $JOB_NAME.${JOB_ID}.${SGE_TASK_ID}.HOSTERROR
-            cat $PE_HOSTFILE >> $JOB_NAME.${JOB_ID}.${SGE_TASK_ID}.HOSTERROR
-        else
             echo $@ > $JOB_NAME.${JOB_ID}.HOSTERROR
             cat $PE_HOSTFILE >> $JOB_NAME.${JOB_ID}.HOSTERROR
+        else
+            echo $@ > $JOB_NAME.${JOB_ID}.${SGE_TASK_ID}.HOSTERROR
+            cat $PE_HOSTFILE >> $JOB_NAME.${JOB_ID}.${SGE_TASK_ID}.HOSTERROR
         fi
         exit 2
     fi
@@ -148,8 +148,8 @@ construct_bias_string(){
 
 clean_up_job(){
     if [ -z ${SGE_TASK_ID} ]; then
-        mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID}.${SGE_TASK_ID} ${DATADIR}.
-    else
         mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID} ${DATADIR}.
+    else
+        mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID}.${SGE_TASK_ID} ${DATADIR}.
     fi
 }

@@ -16,7 +16,7 @@ source ./sub-utilities.sh
 
 # Parse Arguments
 parse_global_args
-if [ -z ${SGE_TASK_ID} ]; then
+if [ ! -z ${SGE_TASK_ID} ]; then
   parse_umbrella_bias_spec
   construct_bias_string
 fi
