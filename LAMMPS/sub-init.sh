@@ -24,8 +24,8 @@ mkdir -p ${DATADIR}/init/
 run_min=True
 label=$BC.tip4p.$cation.$anion
 while [[ $run_min == True ]]; do
-  mpirun -np ${NSLOTS} lmp -in ../LAMMPS/init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
-    -v cation $cation -v anion $anion -v BC ${BC} $@
+  mpirun -np ${NSLOTS} lmp -in init.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+    -v cation $cation -v anion $anion -v BC ${BC} $args_left
   if grep -q "WARNING: Only inserted" ${DATADIR}/init/data.${label}.init; then
     echo "Failed To Place All Ions. Trying Again"
     SEED=$((SEED+1))

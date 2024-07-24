@@ -30,8 +30,8 @@ mkdir -p $DATADIR/equil/
 mkdir -p ${DATADIR}/prod/
 
 # Run Job
-mpirun -np ${NSLOTS} lmp -in ../LAMMPS/run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
-  -v cation $cation -v anion $anion -v BC $BC ${biasString} $@
+mpirun -np ${NSLOTS} lmp -in run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+  -v cation $cation -v anion $anion -v BC $BC ${biasString} $args_left
 
 # Move Log File to DATADIR
 DATADIR=${DATADIR}/prod/
