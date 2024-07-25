@@ -40,7 +40,7 @@ announce_global_args(){
 check_cross_node_job(){
     if (( $NHOSTS > 1 )); then
             echo "ERROR: Running on more than one host."
-        if [ -z ${SGE_TASK_ID} ]; then
+        if [ -z ${SGE_TASK_ID} == "undefined" ]; then
             echo $@ > $JOB_NAME.${JOB_ID}.HOSTERROR
             cat $PE_HOSTFILE >> $JOB_NAME.${JOB_ID}.HOSTERROR
         else
@@ -147,7 +147,7 @@ construct_bias_string(){
 }
 
 clean_up_job(){
-    if [ -z ${SGE_TASK_ID} ]; then
+    if [ ${SGE_TASK_ID} == 'undefined' ]; then
         mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID} ${DATADIR}.
     else
         mv ${WORKINGDIR}/${JOB_NAME}.o${JOB_ID}.${SGE_TASK_ID} ${DATADIR}.
