@@ -18,7 +18,7 @@ args_left=$@
 
 # Parse Arguments
 parse_global_args $args_left
-if [ -z ${SGE_TASK_ID} ]; then
+if [ ${SGE_TASK_ID} != "undefined" ]; then
   parse_umbrella_bias_spec $args_left
   construct_bias_string 
 fi
@@ -30,8 +30,8 @@ mkdir -p $DATADIR/equil/
 mkdir -p ${DATADIR}/prod/
 
 # Run Job
-mpirun -np ${NSLOTS} lmp -in ../LAMMPS/run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
-  -v cation $cation -v anion $anion -v BC $BC ${biasString} $@
+mpirun -np ${NSLOTS} lmp -in run.lmp -v DATADIR ${DATADIR} -v SEED $SEED \
+  -v cation $cation -v anion $anion -v BC $BC ${biasString} $args_left
 
 # Move Log File to DATADIR
 DATADIR=${DATADIR}/prod/
